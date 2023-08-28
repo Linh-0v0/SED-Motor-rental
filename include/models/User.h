@@ -6,11 +6,13 @@ using namespace std;    //use std
 
 class member {
 private:
-    string PASSWORD, FULL_NAME,EXP_DATE, IDx;
-    double ID=0;
-    int CHECK1=0, ID_TYPE=0, CREDIT=20, BIKE_AVAILABLE=10, DRIVER_LICENSE=0,PHONE_NUMBER=1;
+    
+    int CHECK1=0;
 public:
     string USERS_NAME;
+    int ID_TYPE=0, CREDIT=20, BIKE_AVAILABLE=10, PHONE_NUMBER=1;
+    string DRIVER_LICENSE, PASSWORD, FULL_NAME,EXP_DATE, IDx;
+    double ID=0;
     int NEW_MEMBER(){
         while (CHECK1==0){
             cout << "Enter username:\n";
@@ -20,8 +22,9 @@ public:
             cin >> PASSWORD;
 
             cout << "Enter your full name:\n";
-            getline(cin, FULL_NAME);
-
+            while (FULL_NAME==""){
+                getline(cin, FULL_NAME);
+            }
             while (PHONE_NUMBER==1){
                 cout << "Enter your phone number:\n";
                 cin >> PHONE_NUMBER;
@@ -29,6 +32,7 @@ public:
                     cin.clear();
                     std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     cout << "Invalid input. Please try again\n";
+                    PHONE_NUMBER=1;
                 }
             }
 
@@ -49,14 +53,10 @@ public:
                 
             }
 
-            while (DRIVER_LICENSE==0){
+            while (DRIVER_LICENSE==""){
                 cout << "Enter your driver license:\n";
                 cin >> DRIVER_LICENSE;
-                if (cin.fail()){
-                    cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    cout << "Invalid input. Please try again\n";
-                }
+                if (strspn( DRIVER_LICENSE.c_str(), "-.0123456789" ) == DRIVER_LICENSE.size()){ID=1;}else{ID=0;cout << "Invalid input. Please try again\n";};
             }
 
             cout << "Enter your driver license expiration date:\n";

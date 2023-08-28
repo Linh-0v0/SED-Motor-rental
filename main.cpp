@@ -2,22 +2,18 @@
 #include "include/models/User.h"
 #include "include/models/Motorbike.h"
 
-
 int main() {
+    cout << "\nEEET2482/COSC2082 ASSIGNMENT";
+    cout << "\nMOTORBIKE RENTAL APPLICATION";
+    cout << "\nInstructor: Dr. Ling Huo Chong";
+    cout << "\nGroup: Group No.";
+    cout << "\ns3805869, Student Name: Nguyen Truong Thinh.\nsXXXXXXX, Student Name:\nsXXXXXXX, Student Name:";
     while (1){
-        int USER_ROLE=10;
-        int bike=0;
-        int command=0;
-
+        int USER_ROLE=10, bike=0, command=0;
         // Intro:
-        cout << "\nEEET2482/COSC2082 ASSIGNMENT";
-        cout << "\nMOTORBIKE RENTAL APPLICATION";
-        cout << "\nInstructor: Dr. Ling Huo Chong";
-        cout << "\nGroup: Group No.";
-        cout << "\nsXXXXXXX, Student Name\nsXXXXXXX, Student Name\nsXXXXXXX, Student Name\nsXXXXXXX, Student Name";
-        cout << "\nUse the app as 1. Guest 2. Member 3. Admin";
+        cout << "\n\nUse the app as \n1. Guest \n2. Member[sign in required] \n3. Admin [sign in required]";
         cout << "\nEnter your choice:";
-
+        //check role
         while (USER_ROLE<1 || USER_ROLE >3){
             cin >> USER_ROLE;
             if (cin.fail()){
@@ -49,6 +45,7 @@ int main() {
                     if (bike){
                         motorbike1.NEW_BIKE(member1.USERS_NAME);
                     }
+                    APPEND_USER_INFO();
                     member1.showinfo();
                     if (bike){
                         motorbike1.showinfo();

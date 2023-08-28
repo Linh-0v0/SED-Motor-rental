@@ -21,10 +21,10 @@
 // }
 
 #include <iostream>
-#include "include/models/User.h" 
+#include "../include/models/User.h" 
 
 int main() {
-    User user("John", "Doe");
+    member user("John", "Doe");
     std::cout << "Full Name: " << user.getFullName() << std::endl;
     std::cout << "Credit Points: " << user.getCreditPoints() << std::endl;
     return 0;

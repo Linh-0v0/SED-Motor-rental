@@ -41,10 +41,10 @@ public:
     }
     void showinfo(){
         cout << "\nThis bike is a property of member: " << OWNER;
-        cout << "This bike model : " << MODEL;
-        cout << "This bike color:  " << COLOR;
-        cout << "This bike engine size: " << ENGINE_SIZE;
-        cout << "This bike transmission mode: " << TRANSMISSION_MODE;
-        cout << "This bike description: " << DESCRIPTION;
+        cout << "\nThis bike model : " << MODEL;
+        cout << "\nThis bike color:  " << COLOR;
+        cout << "\nThis bike engine size: " << ENGINE_SIZE;
+        cout << "\nThis bike transmission mode: " << TRANSMISSION_MODE;
+        cout << "\nThis bike description: " << DESCRIPTION;
     }
 };
