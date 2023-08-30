@@ -105,6 +105,6 @@ public:
 };
 
 void READ_USER_INFO(){}
-void APPEND_USER_INFO(){}
+void APPEND_USER_INFO(member member1){}
 void MODIFY_USER_INFO(){}
 

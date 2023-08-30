@@ -48,3 +48,4 @@ public:
         cout << "\nThis bike description: " << DESCRIPTION;
     }
 };
+void APPEND_BIKE_INFO(motorbike motorbike1){}

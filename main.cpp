@@ -39,6 +39,7 @@ int main() {
                 }else if (command == 1){
                     break;
                 }else if (command == 3 || command == 4){
+                    if (command == 3){cout << "In order to rent a bike, you need to register first.\n";}
                     member member1;
                     motorbike motorbike1;
                     bike = member1.NEW_MEMBER();
@@ -46,12 +47,14 @@ int main() {
                         motorbike1.NEW_BIKE(member1.USERS_NAME);
                     }
                     //Add to appdata.txt
-                    APPEND_USER_INFO();
-                    
+                    APPEND_USER_INFO(member1);
                     member1.showinfo();
                     if (bike){
+                        //
+                        APPEND_BIKE_INFO(motorbike1);
                         motorbike1.showinfo();
                     }
+
                     cout << "\nYou are now a Member. Please sign in again.\n";
                     USER_ROLE=2;
                     break;
