@@ -45,7 +45,9 @@ int main() {
                     if (bike){
                         motorbike1.NEW_BIKE(member1.USERS_NAME);
                     }
+                    //Add to appdata.txt
                     APPEND_USER_INFO();
+                    
                     member1.showinfo();
                     if (bike){
                         motorbike1.showinfo();
