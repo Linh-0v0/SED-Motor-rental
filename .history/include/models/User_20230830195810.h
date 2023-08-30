@@ -113,7 +113,7 @@ public:
                 cout << "Invalid input. Please try again\n";
             }else{
                 CREDIT=CREDIT+DOLLAR;
-                cout << "Your current credit is: "<< CREDIT << "Credit(s)";
+                cout << ""
                 break;
             }
 

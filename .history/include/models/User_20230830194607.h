@@ -10,7 +10,7 @@ private:
     int CHECK1=0;
 public:
     string USERS_NAME;
-    int ID_TYPE=0, CREDIT=20, BIKE_AVAILABLE=10, PHONE_NUMBER=1, DOLLAR;
+    int ID_TYPE=0, CREDIT=20, BIKE_AVAILABLE=10, PHONE_NUMBER=1;
     string DRIVER_LICENSE, PASSWORD, FULL_NAME,EXP_DATE, IDx;
     double ID=0;
     int NEW_MEMBER(){
@@ -101,24 +101,6 @@ public:
         cout << "\nCurently renting a bike: ";
         cout << "\nRating count: ";
         cout << "\nRating score: ";
-    }
-
-    void topsup(){
-        cout << "\nHow much credit do you want to purchase?\n$";
-        while (1){
-            cin >> DOLLAR;
-            if (cin.fail()){
-                cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                cout << "Invalid input. Please try again\n";
-            }else{
-                CREDIT=CREDIT+DOLLAR;
-                cout << "Your current credit is: "<< CREDIT << "Credit(s)";
-                break;
-            }
-
-        }
-
     }
 };
 

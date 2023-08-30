@@ -68,7 +68,7 @@ int main() {
         else if (USER_ROLE==2){
             cout << "Member\n";
             while (1){
-                cout << "As a member, you can:\n1. Exit Program.\n2. View all motorbike details\n3. Rent a motorbike\n4. Show info\n5. Manage your bike\n6. Search for motorbike\n7. View requests\n8. Rating\n9. \u001b[31mAdd credit point\u001b[0m\n";
+                cout << "As a member, you can:\n1. Exit Program.\n2. View all motorbike details\n3. Rent a motorbike\n4. Show info\n5. Manage your bike\n6. Search for motorbike\n7. View requests\n8. Rating\n9.\u001b[31mAdd credit point\u001b[0m";
                 cin >> command;
                 if (cin.fail()){
                     cin.clear();
@@ -89,9 +89,6 @@ int main() {
                 }else if (command == 7){
                     break;
                 }else if (command == 8){
-                    break;
-                }else if (command == 9){
-                    member1.topsup();
                     break;
                 }
             }

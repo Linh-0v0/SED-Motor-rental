@@ -112,10 +112,7 @@ public:
                 std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 cout << "Invalid input. Please try again\n";
             }else{
-                CREDIT=CREDIT+DOLLAR;
-                cout << "Your current credit is: "<< CREDIT << "Credit(s)";
-                break;
-            }
+                break;}
 
         }
 

@@ -105,19 +105,7 @@ public:
 
     void topsup(){
         cout << "\nHow much credit do you want to purchase?\n$";
-        while (1){
-            cin >> DOLLAR;
-            if (cin.fail()){
-                cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                cout << "Invalid input. Please try again\n";
-            }else{
-                CREDIT=CREDIT+DOLLAR;
-                cout << "Your current credit is: "<< CREDIT << "Credit(s)";
-                break;
-            }
-
-        }
+        while (){}
 
     }
 };
