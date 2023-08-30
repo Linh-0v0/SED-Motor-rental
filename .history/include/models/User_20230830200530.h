@@ -102,6 +102,7 @@ public:
         cout << "\nRating count: ";
         cout << "\nRating score: ";
     }
+
     void topsup(){
         cout << "\nHow much credit do you want to purchase?\n$";
         while (1){
@@ -119,7 +120,6 @@ public:
         }
 
     }
-
 };
 
 void READ_USER_INFO(){}

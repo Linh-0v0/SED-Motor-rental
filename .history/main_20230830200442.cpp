@@ -26,7 +26,7 @@ int main() {
             }
         }
 
-        cout << "Access Granted!\n\nYou are accessed as ";
+        cout << "Access Granted!\nYou are accessed as ";
         
         // Access as Guest
         if (USER_ROLE==1){

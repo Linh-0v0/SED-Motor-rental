@@ -26,7 +26,7 @@ int main() {
             }
         }
 
-        cout << "Access Granted!\n\nYou are accessed as ";
+        cout << "Access Granted!\nYou are accessed as ";
         
         // Access as Guest
         if (USER_ROLE==1){
@@ -41,7 +41,7 @@ int main() {
                     cout << "Invalid input. Please try again\n";
                 }else if (command == 1){
                     break;
-                }else if (command == 2){
+                }else if (command == 1){
                     break;
                 }else if (command == 3 || command == 4){
                     if (command == 3){cout << "In order to rent a bike, you need to register first.\n";}
