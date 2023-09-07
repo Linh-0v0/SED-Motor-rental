@@ -11,7 +11,7 @@ int main() {
     while (1){
         int USER_ROLE=10, bike=0, command=0;
         // Intro:
-        cout << "\n\nUse the app as \n1. Guest \n2. Member[sign in required] \n3. Admin [sign in required]";
+        cout << "\n\nUse the app as \n1. Guest \n2. User[sign in required] \n3. Admin [sign in required]";
         cout << "\nEnter your choice:";
 
         //check role
@@ -43,20 +43,20 @@ int main() {
                     if (command == 3){cout << "In order to rent a bike, you need to register first.\n";}
 
                     motorbike motorbike1;
-                    bike = member1.NEW_MEMBER();
+                    bike = user1.NEW_MEMBER();
                     if (bike){
-                        motorbike1.NEW_BIKE(member1.USERS_NAME);
+                        motorbike1.NEW_BIKE(user1.USERS_NAME);
                     }
                     //Add to appdata.txt
-                    APPEND_USER_INFO(member1);
-                    member1.showinfo();
+                    APPEND_USER_INFO(user1);
+                    user1.showinfo();
                     if (bike){
                         //
                         APPEND_BIKE_INFO(motorbike1);
                         motorbike1.showinfo();
                     }
 
-                    cout << "\nYou are now a Member. Please sign in again.\n";
+                    cout << "\nYou are now a User. Please sign in again.\n";
                     USER_ROLE=2;
                     break;
                 }
@@ -64,9 +64,9 @@ int main() {
         }
         
         
-        // Access as Member 
+        // Access as User 
         else if (USER_ROLE==2){
-            cout << "Member\n";
+            cout << "User\n";
             while (1){
                 cout << "As a member, you can:\n1. Exit Program.\n2. View all motorbike details\n3. Rent a motorbike\n4. Show info\n5. Manage your bike\n6. Search for motorbike\n7. View requests\n8. Rating\n9.\u001b[31mAdd credit point\u001b[0m";
                 cin >> command;

@@ -1,15 +1,166 @@
+#include <iostream>
+#include <iomanip>
+#include <string>
+#include <fstream>
+#include <vector>
 #include "../../include/models/User.h"
+#include "../../include/models/Motorbike.h"
+using namespace std;
 
-void READ_USER_INFO(){}
+// Default constructor
+User::User() : username(""), fullName(""), phoneNumber(""), idType(0), idNumber(""), driverLicense(""), expiryDate(""), creditPoints(0), renterRatingScore(0){};
 
-void APPEND_USER_INFO(member member1){
-    cout << "\nYour infomation will be added in to our data base.";
-    std::ofstream outfile;
-    outfile.open("../../appdata.txt", std::ios_base::app); // append instead of overwrite
-    
-    outfile << member1.USERS_NAME;
+// Parameterized constructor
+User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRataingScore) : username(username), fullName(fullName), password(password), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRataingScore) {}
+
+/***** Getter *****/
+std::string User::getUsername() const
+{
+    return username;
 }
 
-void MODIFY_USER_INFO(){}
+std::string User::getFullName() const
+{
+    return fullName;
+}
 
+std::string User::getPassword() const
+{
+    return password;
+}
 
+const std::vector<Motorbike> &User::getAvailableMotorbikes() const
+{
+    return availableMotorbikes;
+}
+
+/***** Setter *****/
+void User::setUsername(const std::string &newUsername)
+{
+    username = newUsername;
+}
+
+void User::setFullName(const std::string &newFullName)
+{
+    fullName = newFullName;
+}
+
+void User::setPhoneNumber(std::string newPhoneNumber)
+{
+    phoneNumber = newPhoneNumber;
+}
+
+void User::setIdType(int newIdType)
+{
+    idType = newIdType;
+}
+
+void User::setIdNumber(const std::string &newIdNumber)
+{
+    idNumber = newIdNumber;
+}
+
+void User::setDriverLicense(const std::string &newDriverLicense)
+{
+    driverLicense = newDriverLicense;
+}
+
+void User::setExpiryDate(const std::string &newExpiryDate)
+{
+    expiryDate = newExpiryDate;
+}
+
+void User::setConsumingCreditPoints(double newCreditPoints)
+{
+    creditPoints = newCreditPoints;
+}
+
+void User::setRenterRatingScore(double newRenterRatingScore)
+{
+    renterRatingScore = newRenterRatingScore;
+}
+
+/***** Operator *****/
+std::ostream &operator<<(std::ostream &os, const User &user)
+{
+    os << "User's Name: " << user.username << std::endl;
+    os << "Full Name: " << user.fullName << std::endl;
+    os << "Password: " << user.password << std::endl;
+    os << "Phone Number: " << user.phoneNumber << std::endl;
+    os << "ID Type: " << user.idType << std::endl;
+    os << "Driver's License: " << user.driverLicense << std::endl;
+    os << "Expiration Date: " << user.expiryDate << std::endl;
+    // os << "Bike Available: " << user.bikeavailable << std::endl;
+    os << "Credit: " << user.creditPoints << std::endl;
+    return os;
+}
+
+/***** Others *****/
+// void User::viewMotorbikeDetails() const
+// {
+// if (!isMember()) {
+//     //Non-member can only view Motobike details WITHOUT reviews
+//     motorbike.viewMotorbikeDetails();
+// } else {
+//     // Display motorbike details WITH ratings for members
+//     motorbike.viewMotorbikeDetails();
+//     cout << "Motorbike Rating: ";
+//     motorbike.getAverageMotorbikeRating();
+//     cout << "Renter Rating: ";
+//     motorbike.getAverageRenterRating();
+// }
+// }
+
+// Implement the printAvailableMotorbikes function
+void User::printAvailableMotorbikes() const
+{
+    std::cout << "Available Motorbikes:" << std::endl;
+    for (const Motorbike &motorbike : availableMotorbikes)
+    {
+        cout << motorbike << endl;
+    }
+}
+
+void User::addMotorbikeToUser(const Motorbike &motorbike)
+{
+    if (availableMotorbikes.size() == 0)
+    {
+        availableMotorbikes.push_back(motorbike);
+    }
+    else
+    {
+        cout << "You can only add one motorbike to your account." << endl;
+    }
+}
+
+// Enable for motorbike renting (require the owner to input the motorbike requirement)
+void User::listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating)
+{
+    // Set the attributes for the motorbike
+    motorbike.setCreditPerDay(creditPointsConsumed);
+    motorbike.setMinRequiredRenterRating(minRequiredRenterRating);
+
+    // Set the motorbike as listed for rent
+    motorbike.setListedForRent(true);
+}
+
+// Disable the motorbike from renting
+void User::unlistMotorbikeForRent(Motorbike &motorbike)
+{
+    // Unset the motorbike as listed for rent
+    motorbike.setListedForRent(false);
+}
+
+void searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating)
+{
+    // std::cout << "Searching for available motorbikes...\n";
+    // // Perform a search based on the provided criteria (startTime, endTime, city, minRating)
+    // // You should implement the search logic here, considering the user's credit points and rating score
+    // // Display the list of suitable motorbikes
+    // for (const Motorbike& motorbike : availableMotorbikes) {
+    //     if (motorbike.isSuitable(startTime, endTime, city) &&
+    //         creditPoints >= motorbike.getConsumingPoints() && ratingScore >= minRating) {
+    //         std::cout << "Model: " << motorbike.getModel() << ", Year: " << motorbike.getYearMade() << "\n";
+    //     }
+    // }
+}
