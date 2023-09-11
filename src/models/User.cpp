@@ -133,34 +133,3 @@ void User::addMotorbikeToUser(const Motorbike &motorbike)
     }
 }
 
-// Enable for motorbike renting (require the owner to input the motorbike requirement)
-void User::listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating)
-{
-    // Set the attributes for the motorbike
-    motorbike.setCreditPerDay(creditPointsConsumed);
-    motorbike.setMinRequiredRenterRating(minRequiredRenterRating);
-
-    // Set the motorbike as listed for rent
-    motorbike.setListedForRent(true);
-}
-
-// Disable the motorbike from renting
-void User::unlistMotorbikeForRent(Motorbike &motorbike)
-{
-    // Unset the motorbike as listed for rent
-    motorbike.setListedForRent(false);
-}
-
-void searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating)
-{
-    // std::cout << "Searching for available motorbikes...\n";
-    // // Perform a search based on the provided criteria (startTime, endTime, city, minRating)
-    // // You should implement the search logic here, considering the user's credit points and rating score
-    // // Display the list of suitable motorbikes
-    // for (const Motorbike& motorbike : availableMotorbikes) {
-    //     if (motorbike.isSuitable(startTime, endTime, city) &&
-    //         creditPoints >= motorbike.getConsumingPoints() && ratingScore >= minRating) {
-    //         std::cout << "Model: " << motorbike.getModel() << ", Year: " << motorbike.getYearMade() << "\n";
-    //     }
-    // }
-}

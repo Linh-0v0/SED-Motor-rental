@@ -1,3 +1,5 @@
+#include <iomanip>
+#include <sstream>
 #include "../../include/models/User.h"
 #include "../../include/models/Motorbike.h"
 
@@ -20,7 +22,7 @@ int Motorbike::getMinRenterRating() const
     return minRenterRating;
 }
 
-float Motorbike::getAverageMotorbikeRating() const
+double Motorbike::getAverageMotorbikeRating() const
 {
     // if (motorbikeRatings.empty()) {
     //     return 0.0;
@@ -32,7 +34,7 @@ float Motorbike::getAverageMotorbikeRating() const
     // return sum / motorbikeRatings.size();
 }
 
-float Motorbike::getAverageRenterRating() const
+double Motorbike::getAverageRenterRating() const
 {
     // if (renterRatings.empty()) {
     //     return 0.0;
@@ -75,13 +77,14 @@ bool Motorbike::operator==(const Motorbike &other) const
 /* Operator */
 std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike)
 {
+    std::string isListedForRent = motorbike.listedForRent ? "yes" : "no";
     os << "This is a property of member: " << motorbike.ownerUsername << endl;
     os << "Model : " << motorbike.model << endl;
     os << "Color:  " << motorbike.color << endl;
     os << "Engine size: " << motorbike.engineSize << endl;
     os << "Transmission mode: " << motorbike.transmissionMode << endl;
     os << "Description: " << motorbike.description << endl;
-    os << "Available for rent: " << motorbike.listedForRent ? "yes" : "no";
+    os << "Available for rent: " << isListedForRent << endl;
     os << "Motorbike rating: " << motorbike.motorbikeRating << endl;
     os << "Required credit per day: " << motorbike.creditPerDay << endl;
     os << "Minimum renter's score: " << motorbike.minRenterRating << endl;
@@ -92,13 +95,31 @@ std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike)
 /***** Others *****/
 void Motorbike::viewMotorbikeDetails()
 {
+    std::string isListedForRent = listedForRent ? "yes" : "no";
     cout << "***** MOTORBIKE *****" << endl;
     cout << "Model : " << model << endl;
     cout << "Color:  " << color << endl;
     cout << "Engine size: " << engineSize << endl;
     cout << "Transmission mode: " << transmissionMode << endl;
     cout << "Description: " << description << endl;
-    cout << "Available for rent: " << listedForRent ? "yes" : "no";
+    cout << "Available for rent: " << isListedForRent << endl;
     cout << "Required Credit per day: " << creditPerDay << endl;
     cout << "Minimum renter's score: " << minRenterRating << endl;
+}
+
+// Implement the toFileString() method
+std::string Motorbike::toFileString() const
+{
+    std::ostringstream oss1, oss2, oss3;
+    oss1 << std::fixed << std::setprecision(1); // Set precision to 1 decimal place
+    oss2 << std::fixed << std::setprecision(1); 
+    oss3 << std::fixed << std::setprecision(1); 
+    // Convert the double to a string with the specified format
+    oss1 << motorbikeRating;
+    oss2 << creditPerDay;
+    oss3 << minRenterRating;
+    // Format the Motorbike data as a string
+    std::string result = ownerUsername + "," + model + "," + color + "," + engineSize + "," + transmissionMode + "," + std::to_string(yearMade) + "," + description + "," + (listedForRent ? "true" : "false") + "," + oss1.str() + "," + oss2.str() + "," + oss3.str();
+
+    return result;
 }

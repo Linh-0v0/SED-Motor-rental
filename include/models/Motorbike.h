@@ -32,8 +32,9 @@ public:
     const std::string &getOwnerUsername() const;
     double getCreditPerDay() const;
     int getMinRenterRating() const;
-    float getAverageMotorbikeRating() const;
-    float getAverageRenterRating() const;
+    double getAverageMotorbikeRating() const;
+    double getAverageRenterRating() const;
+
 
     /*Setter*/
     void setListedForRent(bool isListed);
@@ -47,6 +48,8 @@ public:
 
     /*Others*/
     void viewMotorbikeDetails();
+    // Method to convert Motorbike data to a formatted string for writing to the file
+    std::string toFileString() const;
 };
 
 #endif

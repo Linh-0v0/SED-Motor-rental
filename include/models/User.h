@@ -55,11 +55,6 @@ public:
     /*Others*/
     void printAvailableMotorbikes() const;
     void addMotorbikeToUser(const Motorbike &motorbike);
-    // Enable the motorbike for renting (require the owner to input the motorbike requirement)
-    void listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating);
-    // Disable the motorbike from renting
-    void unlistMotorbikeForRent(Motorbike &motorbike);
-    void searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating);
 };
 
 #endif

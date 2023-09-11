@@ -1,1 +1,1 @@
-linh,sh01,pink,50cc,AutomaticTransmission,2010,Sportbike,true,8.0,7,6
+linh,sh01,pink,50cc,Automatic Transmission,2010,Sportbike,false,8.0,7.0,6.0

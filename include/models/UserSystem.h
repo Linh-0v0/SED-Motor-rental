@@ -38,11 +38,20 @@ public:
     // Add new motorbike to System
     void addMotorbike(const Motorbike &motorbike);
 
+    /*Update data*/
+    void updateMotorbikeInFile(const Motorbike &updatedMotorbike);
+
     /*Others*/
     User registerUser(const std::string &username);
     bool checkAdmin(const std::string &inputUsername, const std::string &inputPassword);
     bool checkLogin(const std::string &username, const std::string &password);
     void logout();
+
+    // Enable the motorbike for renting (require the owner to input the motorbike requirement)
+    void listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating);
+    // Disable the motorbike from renting
+    void unlistMotorbikeForRent(Motorbike &motorbike);
+    void searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating);
 };
 
 #endif

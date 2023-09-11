@@ -142,6 +142,34 @@ void UserSystem::addMotorbike(const Motorbike &motorbike)
     /////// Add to text file code
 }
 
+/***** Update data *****/
+void UserSystem::updateMotorbikeInFile(const Motorbike &updatedMotorbike)
+{
+    for (Motorbike &motorbike : motorbikes)
+    {
+        if (motorbike.getOwnerUsername() == updatedMotorbike.getOwnerUsername())
+        {
+            motorbike = updatedMotorbike;
+            break;
+        }
+    }
+
+    std::ofstream outFile("motorbikes.txt");
+    if (!outFile.is_open())
+    {
+        std::cerr << "Cannot open file for writing!";
+        return;
+    }
+
+    // Write the data from your data structure (e.g., vector or map) to the text file
+    for (const Motorbike &motorbike : motorbikes)
+    {
+        outFile << motorbike.toFileString() << "\n";
+    }
+
+    outFile.close();
+}
+
 /***** Others *****/
 bool UserSystem::checkAdmin(const std::string &inputUsername, const std::string &inputPassword)
 {
@@ -166,5 +194,41 @@ bool UserSystem::checkLogin(const std::string &username, const std::string &pass
 // Logout the currently logged-in user
 void UserSystem::logout()
 {
-    loggedInUser = User(); // Reset the currently logged-in user to a default-constructed User
+    loggedInUser = User(); 
+}
+
+// Enable for motorbike renting (require the owner to input the motorbike requirement)
+void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating)
+{
+    // Set the attributes for the motorbike
+    motorbike.setCreditPerDay(creditPointsConsumed);
+    motorbike.setMinRequiredRenterRating(minRequiredRenterRating);
+
+    // Set the motorbike as listed for rent
+    motorbike.setListedForRent(true);
+    // Update list status in text file
+    updateMotorbikeInFile(motorbike);
+}
+
+// Disable the motorbike from renting
+void UserSystem::unlistMotorbikeForRent(Motorbike &motorbike)
+{
+    // Unset the motorbike as listed for rent
+    motorbike.setListedForRent(false);
+    // Update list status in text file
+    updateMotorbikeInFile(motorbike);
+}
+
+void UserSystem::searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating)
+{
+    // std::cout << "Searching for available motorbikes...\n";
+    // // Perform a search based on the provided criteria (startTime, endTime, city, minRating)
+    // // You should implement the search logic here, considering the user's credit points and rating score
+    // // Display the list of suitable motorbikes
+    // for (const Motorbike& motorbike : availableMotorbikes) {
+    //     if (motorbike.isSuitable(startTime, endTime, city) &&
+    //         creditPoints >= motorbike.getConsumingPoints() && ratingScore >= minRating) {
+    //         std::cout << "Model: " << motorbike.getModel() << ", Year: " << motorbike.getYearMade() << "\n";
+    //     }
+    // }
 }

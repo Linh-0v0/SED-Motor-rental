@@ -56,6 +56,15 @@ int main()
             }
         }
     }
+
+    // Unlist motorbike (disable for renting), update in text file as well
+    // userSystem.unlistMotorbikeForRent()
+    for (Motorbike &motorbike : motorbikes) {
+        if (motorbike.getOwnerUsername() == "linh") {
+            userSystem.unlistMotorbikeForRent(motorbike);
+        }
+    }
+
     for (const User &user : users)
     {
         for (const Motorbike &motorbike : user.getAvailableMotorbikes())

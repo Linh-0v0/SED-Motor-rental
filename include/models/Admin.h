@@ -14,12 +14,12 @@ private:
 
 public:
     /*Getter*/
-    const std::string &getUsername() const;
-    const std::string &getPassword() const;
+    const std::string &getUsername();
+    const std::string &getPassword();
 
     /*Others*/
-    void viewAllMembers(const std::vector<User> &users) const;
-    void viewAllMotorbikes(const std::vector<Motorbike> &motorbikes) const;
+    void viewAllMembers(const std::vector<User> &users);
+    void viewAllMotorbikes(const std::vector<Motorbike> &motorbikes);
 };
 
 #endif
