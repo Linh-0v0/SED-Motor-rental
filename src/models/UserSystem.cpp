@@ -2,8 +2,10 @@
 #include <iomanip>
 #include <string>
 #include <sstream>
+#include <ctime>
 #include <fstream>
 #include "../../include/models/UserSystem.h"
+#include "../../include/utils/Time.h"
 using namespace std;
 
 UserSystem::UserSystem()
@@ -61,7 +63,7 @@ bool UserSystem::importUsers()
             std::getline(ss, idNumber, ',') &&
             std::getline(ss, driverLicense, ',') &&
             std::getline(ss, expiryDate, ',') &&
-            ss >> creditPoints && ss.ignore() && // Read the int values
+            ss >> creditPoints && ss.ignore() && // Read the double values
             ss >> renterRatingScore)
         {
 
@@ -72,7 +74,7 @@ bool UserSystem::importUsers()
         }
         else
         {
-            std::cerr << "Error parsing line: " << line << std::endl;
+            std::cerr << "Error parsing line: " << line << endl;
         }
     };
     inFile.close();
@@ -92,10 +94,11 @@ bool UserSystem::importMotorbikes()
     while (std::getline(inFile, line))
     {
         std::stringstream ss(line);
-        std::string ownerUsername, model, color, engineSize, transmissionMode, description, listedForRent;
+        std::string ownerUsername, model, color, engineSize, transmissionMode, description, listedForRent, startTimeString, endTimeString, city;
         int yearMade;
         double motorbikeRating, creditPerDay, minRenterRating;
-        bool convertedlistedForRent = false;
+        bool convertedlistedForRent;
+
         // Use std::getline and std::stoi to parse the comma-separated values
         if (std::getline(ss, ownerUsername, ',') &&
             std::getline(ss, model, ',') &&
@@ -107,21 +110,24 @@ bool UserSystem::importMotorbikes()
             std::getline(ss, listedForRent, ',') &&
             ss >> motorbikeRating && ss.ignore() && // Read the double values
             ss >> creditPerDay && ss.ignore() &&
-            ss >> minRenterRating)
+            ss >> minRenterRating && ss.ignore() &&
+            std::getline(ss, startTimeString, ',') &&
+            std::getline(ss, endTimeString, ',') &&
+            std::getline(ss, city))
         {
+            listedForRent == "yes" ? convertedlistedForRent = true : convertedlistedForRent = false;
 
-            if (listedForRent == "true")
-            {
-                convertedlistedForRent = true;
-            }
+            std::time_t startTime = stringToTimestamp(startTimeString);
+            std::time_t endTime = stringToTimestamp(endTimeString);
+
             // Create a User object and add it to the users vector
-            Motorbike motorbike(ownerUsername, model, color, engineSize, transmissionMode, yearMade, description, convertedlistedForRent, motorbikeRating, creditPerDay, minRenterRating);
+            Motorbike motorbike(ownerUsername, model, color, engineSize, transmissionMode, yearMade, description, convertedlistedForRent, motorbikeRating, creditPerDay, minRenterRating, startTime, endTime, city);
 
             motorbikes.push_back(motorbike);
         }
         else
         {
-            std::cerr << "Error parsing line: " << line << std::endl;
+            std::cerr << "Error parsing line: " << line << endl;
         }
     };
     inFile.close();
@@ -194,20 +200,21 @@ bool UserSystem::checkLogin(const std::string &username, const std::string &pass
 // Logout the currently logged-in user
 void UserSystem::logout()
 {
-    loggedInUser = User(); 
+    loggedInUser = User();
 }
 
 // Enable for motorbike renting (require the owner to input the motorbike requirement)
-void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating)
+void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating, std::string city)
 {
     // Set the attributes for the motorbike
     motorbike.setCreditPerDay(creditPointsConsumed);
     motorbike.setMinRequiredRenterRating(minRequiredRenterRating);
-
+    motorbike.setCity(city);
     // Set the motorbike as listed for rent
     motorbike.setListedForRent(true);
     // Update list status in text file
     updateMotorbikeInFile(motorbike);
+    cout << "Motorbike has been listed for renting." << endl;
 }
 
 // Disable the motorbike from renting
@@ -217,18 +224,37 @@ void UserSystem::unlistMotorbikeForRent(Motorbike &motorbike)
     motorbike.setListedForRent(false);
     // Update list status in text file
     updateMotorbikeInFile(motorbike);
+    cout << "Motorbike has been unlisted from renting." << endl;
 }
 
-void UserSystem::searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating)
+// Function to search for available motorbikes in a specified period
+std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
+    std::vector<Motorbike> &motorbikes,
+    std::string userStartTime,
+    std::string userEndTime,
+    std::string city,
+    User& user)
 {
-    // std::cout << "Searching for available motorbikes...\n";
-    // // Perform a search based on the provided criteria (startTime, endTime, city, minRating)
-    // // You should implement the search logic here, considering the user's credit points and rating score
-    // // Display the list of suitable motorbikes
-    // for (const Motorbike& motorbike : availableMotorbikes) {
-    //     if (motorbike.isSuitable(startTime, endTime, city) &&
-    //         creditPoints >= motorbike.getConsumingPoints() && ratingScore >= minRating) {
-    //         std::cout << "Model: " << motorbike.getModel() << ", Year: " << motorbike.getYearMade() << "\n";
-    //     }
-    // }
+    std::vector<Motorbike> availableMotorbikes;
+    std::time_t startTime = stringToTimestamp(userStartTime);
+    std::time_t endTime = stringToTimestamp(userEndTime);
+
+    for (Motorbike &motorbike : motorbikes)
+    {
+        std::time_t motorbikeStartTime = motorbike.getStartTime();
+        std::time_t motorbikeEndTime = motorbike.getEndTime();
+
+        if (endTime <= motorbikeEndTime && 
+        startTime >= motorbikeStartTime && 
+        motorbike.getListedForRent() == true && 
+        motorbike.getCity() == city &&
+        user.getCreditPoints() >= motorbike.getCreditPerDay() &&
+        user.getRenterRatingScore() >= motorbike.getMinRenterRating())
+        {
+            // Motorbike is available for the user's desired period
+            availableMotorbikes.push_back(motorbike);
+        }
+    }
+
+    return availableMotorbikes;
 }

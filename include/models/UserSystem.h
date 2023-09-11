@@ -48,10 +48,18 @@ public:
     void logout();
 
     // Enable the motorbike for renting (require the owner to input the motorbike requirement)
-    void listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating);
+    void listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating, std::string city);
     // Disable the motorbike from renting
     void unlistMotorbikeForRent(Motorbike &motorbike);
-    void searchAvailableMotorbikes(int startTime, int endTime, const std::string &city, int minRating);
+    // Search Motorbikes available for a period of time
+    std::vector<Motorbike> searchAvailableMotorbikes(
+    std::vector<Motorbike>& motorbikes,
+    std::string userStartTime,
+    std::string userEndTime,
+    std::string city,
+    User& user
+);
+    
 };
 
 #endif

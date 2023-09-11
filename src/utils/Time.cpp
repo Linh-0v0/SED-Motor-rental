@@ -2,10 +2,12 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include <stdexcept>
 #include "../../include/utils/Time.h"
+using namespace std;
 
 // Convert a time string to a Unix timestamp
-std::time_t stringToTimestamp(const std::string& timeStr) {
+std::time_t stringToTimestamp(std::string timeStr) {
     std::tm tm = {};
     std::istringstream ss(timeStr);
 
@@ -13,8 +15,7 @@ std::time_t stringToTimestamp(const std::string& timeStr) {
     ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
 
     if (ss.fail()) {
-        // Handle parsing error if needed
-        // For example, you can throw an exception or return an error code
+        // Handle parsing error
         throw std::invalid_argument("Invalid time string format");
     }
 
@@ -24,11 +25,9 @@ std::time_t stringToTimestamp(const std::string& timeStr) {
 
 // Convert a Unix timestamp to a time string
 std::string timestampToString(std::time_t timestamp) {
+    // the str format "YYYY-MM-DD HH:MM:SS"
     std::tm tm = *std::localtime(&timestamp);
-
-    // Format the time string in the desired format (YYYY-MM-DD HH:MM:SS)
-    std::ostringstream ss;
-    ss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
-
-    return ss.str();
+    std::ostringstream oss;
+    oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
+    return oss.str();
 }

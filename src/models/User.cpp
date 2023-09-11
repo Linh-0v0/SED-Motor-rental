@@ -11,7 +11,7 @@ using namespace std;
 User::User() : username(""), fullName(""), phoneNumber(""), idType(0), idNumber(""), driverLicense(""), expiryDate(""), creditPoints(0), renterRatingScore(0){};
 
 // Parameterized constructor
-User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRataingScore) : username(username), fullName(fullName), password(password), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRataingScore) {}
+User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRatingScore) : username(username), fullName(fullName), password(password), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRatingScore) {}
 
 /***** Getter *****/
 std::string User::getUsername() const
@@ -27,6 +27,16 @@ std::string User::getFullName() const
 std::string User::getPassword() const
 {
     return password;
+}
+
+double User::getCreditPoints() const
+{
+    return creditPoints;
+}
+
+double User::getRenterRatingScore() const
+{
+    return renterRatingScore;
 }
 
 const std::vector<Motorbike> &User::getAvailableMotorbikes() const
@@ -83,38 +93,24 @@ void User::setRenterRatingScore(double newRenterRatingScore)
 /***** Operator *****/
 std::ostream &operator<<(std::ostream &os, const User &user)
 {
-    os << "User's Name: " << user.username << std::endl;
-    os << "Full Name: " << user.fullName << std::endl;
-    os << "Password: " << user.password << std::endl;
-    os << "Phone Number: " << user.phoneNumber << std::endl;
-    os << "ID Type: " << user.idType << std::endl;
-    os << "Driver's License: " << user.driverLicense << std::endl;
-    os << "Expiration Date: " << user.expiryDate << std::endl;
-    // os << "Bike Available: " << user.bikeavailable << std::endl;
-    os << "Credit: " << user.creditPoints << std::endl;
+    os << "User's Name: " << user.username << endl;
+    os << "Full Name: " << user.fullName << endl;
+    os << "Password: " << user.password << endl;
+    os << "Phone Number: " << user.phoneNumber << endl;
+    os << "ID Type: " << user.idType << endl;
+    os << "Driver's License: " << user.driverLicense << endl;
+    os << "Expiration Date: " << user.expiryDate << endl;
+    // os << "Bike Available: " << user.bikeavailable << endl;
+    os << "Credit: " << user.creditPoints << endl;
+    os << "Personal renting score: " << user.renterRatingScore << endl;
     return os;
 }
 
 /***** Others *****/
-// void User::viewMotorbikeDetails() const
-// {
-// if (!isMember()) {
-//     //Non-member can only view Motobike details WITHOUT reviews
-//     motorbike.viewMotorbikeDetails();
-// } else {
-//     // Display motorbike details WITH ratings for members
-//     motorbike.viewMotorbikeDetails();
-//     cout << "Motorbike Rating: ";
-//     motorbike.getAverageMotorbikeRating();
-//     cout << "Renter Rating: ";
-//     motorbike.getAverageRenterRating();
-// }
-// }
-
 // Implement the printAvailableMotorbikes function
 void User::printAvailableMotorbikes() const
 {
-    std::cout << "Available Motorbikes:" << std::endl;
+    cout << "Available Motorbikes:" << endl;
     for (const Motorbike &motorbike : availableMotorbikes)
     {
         cout << motorbike << endl;
@@ -133,3 +129,14 @@ void User::addMotorbikeToUser(const Motorbike &motorbike)
     }
 }
 
+double User::calcAverageRenterRating() const
+{
+    if (renterRatingScores.empty()) {
+        return 0.0;
+    }
+    float sum = 0.0;
+    for (float rating : renterRatingScores) {
+        sum += rating;
+    }
+    return sum / renterRatingScores.size();
+}

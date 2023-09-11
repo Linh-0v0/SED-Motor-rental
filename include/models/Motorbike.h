@@ -4,8 +4,8 @@
 #include <iostream>
 #include <string> //use string function
 #include <vector>
+#include <ctime>
 #include "User.h"
-using namespace std; // use std
 
 class Motorbike
 {
@@ -20,34 +20,40 @@ private:
     bool listedForRent;
     std::vector<std::string> reviews;
     std::vector<double> motorbikeRatings;
-    double motorbikeRating;
+    double motorbikeRating; //average of `motorbikeRatings`
 
     double creditPerDay; // required credit for rent
     double minRenterRating;
+    std::time_t startTime; // Implement this method
+    std::time_t endTime;   // Implement this method
+    std::string city;
 
 public:
-    Motorbike(const std::string &ownerUsername, const std::string &model, const std::string &color, const std::string &engineSize, const std::string &transmissionMode, int yearMade, const std::string &description, bool listedForRent, double motorbikeRating, double creditPerDay, double minRenterRating);
+    Motorbike(const std::string &ownerUsername, const std::string &model, const std::string &color, const std::string &engineSize, const std::string &transmissionMode, int yearMade, const std::string &description, bool listedForRent, double motorbikeRating, double creditPerDay, double minRenterRating, std::time_t startTime, std::time_t endTime, std::string city);
 
     /*Getter*/
-    const std::string &getOwnerUsername() const;
+    std::string getOwnerUsername() const;
+    bool getListedForRent();
     double getCreditPerDay() const;
     int getMinRenterRating() const;
-    double getAverageMotorbikeRating() const;
-    double getAverageRenterRating() const;
-
+    std::time_t getStartTime() const;
+    std::time_t getEndTime() const;
+    std::string getCity() const;
 
     /*Setter*/
     void setListedForRent(bool isListed);
+    void setMotorbikeRating(double motorbikeRating);
     void setCreditPerDay(int creditPointsConsumed);
     // Set the minimum required renter rating for this motorbike
     void setMinRequiredRenterRating(int minRequiredRenterRating);
+    void setCity(std::string city);
 
     /*Operator*/
     bool operator==(const Motorbike &other) const;
     friend std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike);
 
     /*Others*/
-    void viewMotorbikeDetails();
+    double calcAverageMotorbikeRating() const; // return the average valuef for MotorbikeRating
     // Method to convert Motorbike data to a formatted string for writing to the file
     std::string toFileString() const;
 };

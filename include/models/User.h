@@ -6,7 +6,6 @@
 #include <string>
 #include <string.h> //use string function
 #include "Motorbike.h"
-using namespace std; // use std
 
 class User
 {
@@ -20,12 +19,12 @@ private:
     std::string driverLicense;
     std::string expiryDate;
     double creditPoints;
-    double renterRatingScore;
+    std::vector<double> renterRatingScores;
+    double renterRatingScore; //average of `renterRatingScores`
     // motorbikes that user rents from others
     std::vector<Motorbike> rentedMotorbikes;
-    // motorbikes of user for renting
+    // motorbikes of user
     std::vector<Motorbike> availableMotorbikes;
-    // std::vector<Motorbike> listedMotorbikes;
 
 public:
     User();
@@ -35,6 +34,9 @@ public:
     std::string getFullName() const;
     std::string getUsername() const;
     std::string getPassword() const;
+    double getCreditPoints() const;
+    double getRenterRatingScore() const;
+
     const std::vector<Motorbike> &getAvailableMotorbikes() const;
 
     /*Setter*/
@@ -55,6 +57,7 @@ public:
     /*Others*/
     void printAvailableMotorbikes() const;
     void addMotorbikeToUser(const Motorbike &motorbike);
+    double calcAverageRenterRating() const;
 };
 
 #endif

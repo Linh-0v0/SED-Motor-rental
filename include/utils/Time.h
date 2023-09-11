@@ -4,7 +4,7 @@
 #include <ctime>
 #include <string>
 
-std::time_t stringToTimestamp(const std::string& timeStr);
+std::time_t stringToTimestamp(std::string timeStr);
 std::string timestampToString(std::time_t timestamp);
 
 #endif
