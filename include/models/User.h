@@ -21,8 +21,9 @@ private:
     std::string expiryDate;
     double creditPoints;
     double renterRatingScore;
+    // motorbikes that user rents from others
     std::vector<Motorbike> rentedMotorbikes;
-    // motorbikes of user
+    // motorbikes of user for renting
     std::vector<Motorbike> availableMotorbikes;
     // std::vector<Motorbike> listedMotorbikes;
 

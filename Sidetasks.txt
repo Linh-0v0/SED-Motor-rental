@@ -3,3 +3,4 @@
 3. password Hash - password Unhash
 4. how long can user rent a bike? Or is it allowed to be a day only?
 5. update current data to text file
+6. Username existed check

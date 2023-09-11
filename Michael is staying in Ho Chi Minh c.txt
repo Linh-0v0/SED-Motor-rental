@@ -1,0 +1,23 @@
+Michael is staying in Ho Chi Minh city and he is planning to visit popular destinations in Vietnam. As a tour agent, you have come out with a list of destinations in orders as below: 
+Dalat 2 -> Nha Trang 3 -> Da Nang 2 -> Hue 1 -> Hanoi3
+Note: The integer value shown in each destination means the numbers of days the Michael will be staying before going to the next destination.
+a. User singly linked list concept to record the numberes of days in eah destination. For the linked list node, define a class called Destination, with private attributes name, days and *nextDestination. Write a function to print out the information as follows:
+Dalat: 2 days
+Nha Trang: 3 days
+Da Nang: 2 days
+Hue: 1 day
+Hanoi: 3 days
+
+b. Write a function to remove a particular destination from the linked list. The destination that will be removed will be entered by Michael (the user). You may assume that Michael enters the correct name for the destination to be removed.
+
+c. Write a function to print out all destinations within the number of days entered by Michael. The first destination will always be the first node in the linked list. For example, if Michael enters 6 days, then the output will be as follows:
+Dalat: 2 days
+Nha Trang: 3 days
+Da Nang is not included in the output. If Da Nang is included, the number of days will the be 7 days, which exceed 6 days.
+You may assume that Michael will not key in more than the required days for the trip.
+Test all the functions in main() with appropriate output messages.
+
+Q2:
+The coffee shop has name, list of selling products, and need to save the list of receipt of products purchased by each customer. Each product item has name (string) and price (double). The shop can add a new product to its selling list (given name and price of the product).
+The shop manages each receipt by receipt id, each product bought together with its quantity and subtotal. The receipt id should be unique for each receipt, counting up from 1. You may assume the name of the product entered by the shop owner is correct and is in the selling list. At the end of the receipt, it will show the running total for the quantity of products purchased, the lowest subtotal, the grand total for the amount to be paid.
+Note: all attributes should be declared as private. You can utilize friend class if needed.
