@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 #include "include/models/UserSystem.h"
+#include "include/models/RentalRequest.h"
 using namespace std;
 
 int main()
@@ -123,6 +124,35 @@ int main()
             //// Logout the user when they're done
             // userSystem.logout();
             // std::cout << "Logged out.\n";
+
+            // Ask the user to enter the owner's username until a valid owner is found
+            std::string ownerUsername;
+            while (true) {
+                std::cout << "Enter the owner's username to request to rent their motorbike: ";
+                std::getline(cin, ownerUsername);
+
+                // Check if the owner exists
+                User* owner = userSystem.findUserByUsername(ownerUsername);
+                if (owner != nullptr) {
+                    // Owner found, break out of the loop
+                    break;
+                } else {
+                    std::cerr << "Owner not found. Please enter a valid owner's username." << std::endl;
+                }
+            }
+
+            // Now you have a valid ownerUsername, proceed with the rental request
+            // Create the RentalRequest object and send the request to the owner
+            RentalRequest request(loggedInUser.getUsername(), ownerUsername);
+            userSystem.addPendingRequestToOwner(request);
+
+
+            int requestId = 0; // Initialize requestId
+            userSystem.storeRentalRequest(request, requestId);
+            if (requestId != 0) {
+                std::cout << "Request to rent the motorbike " << requestId << " has been sent to the owner." << std::endl;
+            }
+
         }
         else
         {

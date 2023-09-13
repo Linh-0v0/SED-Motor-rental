@@ -6,6 +6,9 @@
 #include <string>
 #include <string.h> //use string function
 #include "Motorbike.h"
+#include "RentalRequest.h"
+
+class RentalRequest;
 
 class User
 {
@@ -25,6 +28,8 @@ private:
     std::vector<Motorbike> rentedMotorbikes;
     // motorbikes of user
     std::vector<Motorbike> availableMotorbikes;
+
+    std::vector<RentalRequest> pendingRequests;
 
 public:
     User();
@@ -58,6 +63,9 @@ public:
     void printAvailableMotorbikes() const;
     void addMotorbikeToUser(const Motorbike &motorbike);
     double calcAverageRenterRating() const;
+
+    void handlePendingRequests(Motorbike& motorbike);
+    void addPendingRequest(const RentalRequest& request);
 };
 
 #endif

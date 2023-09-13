@@ -6,6 +6,9 @@
 #include <vector>
 #include <ctime>
 #include "User.h"
+#include "RentalRequest.h"
+
+class RentalRequest;
 
 class Motorbike
 {
@@ -27,6 +30,9 @@ private:
     std::time_t startTime; // Implement this method
     std::time_t endTime;   // Implement this method
     std::string city;
+
+    // vector to store pending rental requests
+    std::vector<RentalRequest> pendingRequests;
 
 public:
     Motorbike(const std::string &ownerUsername, const std::string &model, const std::string &color, const std::string &engineSize, const std::string &transmissionMode, int yearMade, const std::string &description, bool listedForRent, double motorbikeRating, double creditPerDay, double minRenterRating, std::time_t startTime, std::time_t endTime, std::string city);
@@ -56,6 +62,15 @@ public:
     double calcAverageMotorbikeRating() const; // return the average valuef for MotorbikeRating
     // Method to convert Motorbike data to a formatted string for writing to the file
     std::string toFileString() const;
+
+    //function to request to rent the motorbike
+    void requestToRentMotorbike(const std::string& requestingUser);
+
+    //function to get pending rental requests
+    const std::vector<RentalRequest>& getPendingRequests() const;
+
+    void handlePendingRequest();
+
 };
 
 #endif

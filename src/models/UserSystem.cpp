@@ -5,6 +5,7 @@
 #include <ctime>
 #include <fstream>
 #include "../../include/models/UserSystem.h"
+#include "../../include/models/RentalRequest.h"
 #include "../../include/utils/Time.h"
 using namespace std;
 
@@ -257,4 +258,95 @@ std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
     }
 
     return availableMotorbikes;
+}
+
+void UserSystem::addPendingRequestToOwner(const RentalRequest& request) {
+    // Find the owner user by their username
+    for (User& user : users) {
+        if (user.getUsername() == request.getMotorbikeOwner()) {
+            user.addPendingRequest(request);
+            return; // Exit the loop once the owner is found and the request is added
+        }
+    }
+}
+
+
+User* UserSystem::findUserByUsername(const std::string& username) {
+    for (User& user : users) {
+        if (user.getUsername() == username) {
+            return &user; // Return a pointer to the user if found
+        }
+    }
+    return nullptr; // Return nullptr if the user is not found
+}
+
+
+// void UserSystem::loadRentalRequestsFromFile(const std::string& filename) {
+//     std::ifstream inputFile(filename);
+
+//     if (!inputFile.is_open()) {
+//         std::cerr << "Failed to open file: " << filename << std::endl;
+//         return;
+//     }
+
+//     rentalRequests.clear(); // Clear existing requests before loading from file
+
+//     std::string line;
+//     while (std::getline(inputFile, line)) {
+//         std::istringstream iss(line);
+//         std::string requestingUser, motorbikeOwner;
+//         bool accepted;
+
+//         if (iss >> requestingUser >> motorbikeOwner >> accepted) {
+//             RentalRequest request(requestingUser, motorbikeOwner);
+//             request.setAccepted(accepted);
+//             rentalRequests.push_back(request);
+//         } else {
+//             std::cerr << "Failed to parse line: " << line << std::endl;
+//         }
+//     }
+
+//     inputFile.close();
+// }
+
+// UserSystem.cpp
+
+void UserSystem::saveRentalRequestsToFile(const std::string& filename) {
+    // Open the file for writing
+    std::ofstream file(filename);
+
+    // Check if the file is open
+    if (!file.is_open()) {
+        std::cerr << "Error opening file for writing: " << filename << std::endl;
+        return;
+    }
+
+    // Iterate through the rentalRequests vector and save each request to the file
+    for (const RentalRequest& request : rentalRequests) {
+        // Format the data and write it to the file
+        file << request.getRequestingUser() << " "
+             << request.getMotorbikeOwner() << " "
+             << (request.isAccepted() ? "1" : "0") << " "<< "\n";
+    }
+
+    // Flush the file to ensure immediate writing
+    file.flush();
+
+    // Close the file
+    file.close();
+}
+
+
+void UserSystem::storeRentalRequest(const RentalRequest& request,int& requestId) {
+    // Generate a unique request ID (you can implement this logic)
+    requestId = request.getRequestId();
+
+    // Update the rental request with start and end times
+    RentalRequest updatedRequest = request;
+
+    // Add the updated request to the list of rental requests
+    rentalRequests.push_back(updatedRequest);
+
+    // Save the updated list of rental requests to a file
+    saveRentalRequestsToFile("rental_requests.txt");
 }

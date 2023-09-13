@@ -17,6 +17,7 @@ private:
 
     Admin loggedInAdmin;
     User loggedInUser;
+    std::vector<RentalRequest> rentalRequests;
 
 public:
     UserSystem();
@@ -57,8 +58,20 @@ public:
     std::string userStartTime,
     std::string userEndTime,
     std::string city,
-    User& user
-);
+    User& user 
+    );
+
+
+    void addPendingRequestToOwner(const RentalRequest& request);
+    User* findUserByUsername(const std::string& username);
+    void storeRentalRequest(const RentalRequest& request, int& requestId);
+    void loadRentalRequestsFromFile(const std::string& filename);
+    void saveRentalRequestsToFile(const std::string& filename);
+    // Accept a rental request by request ID
+    void acceptRentalRequest(int requestId);
+
+    // Decline a rental request by request ID
+    void declineRentalRequest(int requestId);
     
 };
 

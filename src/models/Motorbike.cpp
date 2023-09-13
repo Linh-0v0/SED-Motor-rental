@@ -3,6 +3,7 @@
 #include <ctime>
 #include "../../include/models/User.h"
 #include "../../include/models/Motorbike.h"
+#include "../../include/models/RentalRequest.h"
 #include "../../include/utils/Time.h"
 using namespace std;
 
@@ -140,3 +141,61 @@ std::string Motorbike::toFileString() const
 
     return result;
 }
+
+
+// Implement the requestToRentMotorbike function
+void Motorbike::requestToRentMotorbike(const std::string& requestingUser) {
+    // Check if the motorbike is available for rent
+    if (listedForRent) {
+        // Create a rental request and add it to the pending requests
+        RentalRequest request(requestingUser, ownerUsername);
+        pendingRequests.push_back(request);
+
+        cout << "Request to rent the motorbike has been sent." << endl;
+    } else {
+        cout << "This motorbike is not available for rent at the moment." << endl;
+    }
+}
+
+// Implement the getPendingRequests function
+const std::vector<RentalRequest>& Motorbike::getPendingRequests() const {
+    return pendingRequests;
+}
+
+// Implement the handlePendingRequest function
+void Motorbike::handlePendingRequest() {
+    // Display the pending rental requests for the motorbike
+    std::cout << "Pending Rental Requests for Motorbike: " << model << std::endl;
+
+    int requestIndex = 1;
+
+    for (const RentalRequest& request : pendingRequests) {
+        std::cout << "Request " << requestIndex << ":" << std::endl;
+        std::cout << "Requesting User: " << request.getRequestingUser() << std::endl;
+        std::cout << "Accepted: " << (request.isAccepted() ? "Yes" : "No") << std::endl;
+        std::cout << std::endl;
+        requestIndex++;
+    }
+
+    // Allow the owner to choose and handle a request
+    int choice;
+
+    do {
+        std::cout << "Enter the number of the request you want to handle (0 to exit): ";
+        std::cin >> choice;
+
+        if (choice >= 1 && choice <= pendingRequests.size()) {
+            // Handle the selected request (e.g., accept or reject it)
+            RentalRequest& selectedRequest = pendingRequests[choice - 1];
+
+            // You can implement the logic to accept or reject the request here
+            // For example, set selectedRequest as accepted and others as rejected
+
+            std::cout << "Request " << choice << " has been handled." << std::endl;
+            break; // Exit the loop
+        } else if (choice != 0) {
+            std::cout << "Invalid choice. Please try again." << std::endl;
+        }
+    } while (choice != 0);
+}
+
