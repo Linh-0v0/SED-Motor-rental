@@ -42,6 +42,8 @@ int main()
         return 1; // Exit with an error code
     }
 
+    // userSystem.loadRentalRequestsFromFile("rental_requests.txt");
+
     std::vector<Motorbike> &motorbikes = userSystem.getMotorbikes();
     // Add the Motorbike to corresponding User
     for (Motorbike &motorbike : motorbikes)
@@ -116,42 +118,46 @@ int main()
             // Search Motorbikes available for 'a period of time' in 'a city' (suitable with the current user's 'credit points' and 'rating score')
             std::vector<Motorbike> availableMotorbikes = userSystem.searchAvailableMotorbikes(motorbikes, "2023-09-02 08:00:00", "2023-09-03 18:00:00", "Sai Gon", loggedInUser);
             cout << "\n***** Available motorbikes *****" << endl;
-            for (const Motorbike &motorbike : availableMotorbikes)
-            {
-                cout << motorbike << endl;
+            for (size_t i = 0; i < availableMotorbikes.size(); ++i) {
+                std::cout << "Option " << (i + 1) << ":" << std::endl;
+                std::cout << availableMotorbikes[i] << std::endl;
             }
+
+
+            int choice = 0 ;
+
+            std::cout << "Enter the number of the motorbike you want to request (0 to cancel): ";
+            std::cin >> choice;
+
+            if (choice >= 1 && choice <= availableMotorbikes.size()) {
+                Motorbike selectedMotorbike = availableMotorbikes[choice - 1];
+                std::string ownerUsername = selectedMotorbike.getOwnerUsername();
+                std::string username = loggedInUser.getUsername();
+                // Prompt the user for additional information (credit, id, etc.)
+                double credit;
+                bool accepted = false;
+                bool rejected = false;
+               
+                // Access startTime and endTime from selectedMotorbike
+                std::time_t startTime = selectedMotorbike.getStartTime();
+                std::time_t endTime = selectedMotorbike.getEndTime();
+
+                // Request to rent the selected motorbike
+                selectedMotorbike.requestToRentMotorbike(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints());
+
+                RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, credit, accepted, rejected);
+                
+                userSystem.storeRentalRequest(request);
+
+            } else if (choice != 0) {
+                std::cout << "Invalid choice. Please try again." << std::endl;
+            }
+
+            userSystem.loadAndDisplayRentalRequests();
 
             //// Logout the user when they're done
             // userSystem.logout();
             // std::cout << "Logged out.\n";
-
-            // Ask the user to enter the owner's username until a valid owner is found
-            std::string ownerUsername;
-            while (true) {
-                std::cout << "Enter the owner's username to request to rent their motorbike: ";
-                std::getline(cin, ownerUsername);
-
-                // Check if the owner exists
-                User* owner = userSystem.findUserByUsername(ownerUsername);
-                if (owner != nullptr) {
-                    // Owner found, break out of the loop
-                    break;
-                } else {
-                    std::cerr << "Owner not found. Please enter a valid owner's username." << std::endl;
-                }
-            }
-
-            // Now you have a valid ownerUsername, proceed with the rental request
-            // Create the RentalRequest object and send the request to the owner
-            RentalRequest request(loggedInUser.getUsername(), ownerUsername);
-            userSystem.addPendingRequestToOwner(request);
-
-
-            int requestId = 0; // Initialize requestId
-            userSystem.storeRentalRequest(request, requestId);
-            if (requestId != 0) {
-                std::cout << "Request to rent the motorbike " << requestId << " has been sent to the owner." << std::endl;
-            }
 
         }
         else

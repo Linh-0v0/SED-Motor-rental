@@ -142,23 +142,10 @@ double User::calcAverageRenterRating() const
     return sum / renterRatingScores.size();
 }
 
-// Implement the addPendingRequest function
-void User::addPendingRequest(const RentalRequest& request) {
-    // Use a non-const reference or make a copy of the pendingRequests vector
-    std::vector<RentalRequest>& pendingRequests = this->pendingRequests; // Use a reference to the member variable
-
-    // Find and remove any existing requests with the same motorbike owner and time
-    pendingRequests.erase(
-        std::remove_if(
-            pendingRequests.begin(),
-            pendingRequests.end(),
-            [&request](const RentalRequest& existingRequest) {
-                return existingRequest.getMotorbikeOwner() == request.getMotorbikeOwner() &&
-                       existingRequest.isAccepted() == false; // You may adjust this condition as needed
-            }),
-        pendingRequests.end());
-
-    // Add the new request to the pendingRequests
-    pendingRequests.push_back(request);
+void User::addRentalRequest(const RentalRequest& request) {
+    rentalRequests.push_back(request);
 }
 
+const std::vector<RentalRequest>& User::getRentalRequests() const {
+    return rentalRequests;
+}

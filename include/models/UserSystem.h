@@ -19,6 +19,7 @@ private:
     User loggedInUser;
     std::vector<RentalRequest> rentalRequests;
 
+
 public:
     UserSystem();
 
@@ -64,14 +65,11 @@ public:
 
     void addPendingRequestToOwner(const RentalRequest& request);
     User* findUserByUsername(const std::string& username);
-    void storeRentalRequest(const RentalRequest& request, int& requestId);
-    void loadRentalRequestsFromFile(const std::string& filename);
+    void storeRentalRequest(const RentalRequest& request);
+    void updateRentalRequestsToFile(const std::string& filename, const std::vector<RentalRequest>& updatedRequests); 
     void saveRentalRequestsToFile(const std::string& filename);
-    // Accept a rental request by request ID
-    void acceptRentalRequest(int requestId);
-
-    // Decline a rental request by request ID
-    void declineRentalRequest(int requestId);
+    void loadAndDisplayRentalRequests();
+    void acceptOrRejectRequest();
     
 };
 

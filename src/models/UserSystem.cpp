@@ -260,16 +260,6 @@ std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
     return availableMotorbikes;
 }
 
-void UserSystem::addPendingRequestToOwner(const RentalRequest& request) {
-    // Find the owner user by their username
-    for (User& user : users) {
-        if (user.getUsername() == request.getMotorbikeOwner()) {
-            user.addPendingRequest(request);
-            return; // Exit the loop once the owner is found and the request is added
-        }
-    }
-}
-
 
 User* UserSystem::findUserByUsername(const std::string& username) {
     for (User& user : users) {
@@ -281,39 +271,9 @@ User* UserSystem::findUserByUsername(const std::string& username) {
 }
 
 
-// void UserSystem::loadRentalRequestsFromFile(const std::string& filename) {
-//     std::ifstream inputFile(filename);
-
-//     if (!inputFile.is_open()) {
-//         std::cerr << "Failed to open file: " << filename << std::endl;
-//         return;
-//     }
-
-//     rentalRequests.clear(); // Clear existing requests before loading from file
-
-//     std::string line;
-//     while (std::getline(inputFile, line)) {
-//         std::istringstream iss(line);
-//         std::string requestingUser, motorbikeOwner;
-//         bool accepted;
-
-//         if (iss >> requestingUser >> motorbikeOwner >> accepted) {
-//             RentalRequest request(requestingUser, motorbikeOwner);
-//             request.setAccepted(accepted);
-//             rentalRequests.push_back(request);
-//         } else {
-//             std::cerr << "Failed to parse line: " << line << std::endl;
-//         }
-//     }
-
-//     inputFile.close();
-// }
-
-// UserSystem.cpp
-
 void UserSystem::saveRentalRequestsToFile(const std::string& filename) {
-    // Open the file for writing
-    std::ofstream file(filename);
+    // Open the file for writing (in append mode)
+    std::ofstream file(filename, std::ios::app);
 
     // Check if the file is open
     if (!file.is_open()) {
@@ -324,9 +284,14 @@ void UserSystem::saveRentalRequestsToFile(const std::string& filename) {
     // Iterate through the rentalRequests vector and save each request to the file
     for (const RentalRequest& request : rentalRequests) {
         // Format the data and write it to the file
-        file << request.getRequestingUser() << " "
-             << request.getMotorbikeOwner() << " "
-             << (request.isAccepted() ? "1" : "0") << " "<< "\n";
+        file << request.getRequestingUser() << ","
+             << request.getMotorbikeOwner() << ","
+             << request.getStartTime() << "," // Save startTime
+             << request.getEndTime() << ","   // Save endTime
+             << request.getCredit() << ","   // Save credit
+             << (request.isAccepted() ? "1" : "0") << ","
+             << (request.isRejected() ? "1" : "0") <<
+               "\n"; 
     }
 
     // Flush the file to ensure immediate writing
@@ -336,11 +301,29 @@ void UserSystem::saveRentalRequestsToFile(const std::string& filename) {
     file.close();
 }
 
+void UserSystem::updateRentalRequestsToFile(const std::string& filename, const std::vector<RentalRequest>& updatedRequests) {
+    std::ofstream outFile(filename);
 
-void UserSystem::storeRentalRequest(const RentalRequest& request,int& requestId) {
-    // Generate a unique request ID (you can implement this logic)
-    requestId = request.getRequestId();
+    if (!outFile.is_open()) {
+        std::cerr << "Cannot open file for writing: " << filename << std::endl;
+        return;
+    }
 
+    for (const RentalRequest& request : updatedRequests) {
+        outFile << request.getRequestingUser() << ","
+                << request.getMotorbikeOwner() << ","
+                << request.getStartTime() << ","
+                << request.getEndTime() << ","
+                << request.getCredit() << ","
+                << request.isAccepted() << ","
+                << request.isRejected() << std::endl;
+    }
+
+    outFile.close();
+}
+
+
+void UserSystem::storeRentalRequest(const RentalRequest& request) {
     // Update the rental request with start and end times
     RentalRequest updatedRequest = request;
 
@@ -349,4 +332,107 @@ void UserSystem::storeRentalRequest(const RentalRequest& request,int& requestId)
 
     // Save the updated list of rental requests to a file
     saveRentalRequestsToFile("rental_requests.txt");
+}
+
+
+void UserSystem::loadAndDisplayRentalRequests() {
+    // Load rental requests from the file
+    std::ifstream inFile("rental_requests.txt");
+    if (!inFile.is_open()) {
+        std::cerr << "Cannot open rental requests file!" << std::endl;
+        return;
+    }
+
+    std::string line;
+    int lineNumber = 0; // Keep track of the line number being processed
+    bool ownerHasRequests = false; // Flag to check if the owner has any requests
+    int requestNumber = 0;
+
+    while (std::getline(inFile, line)) {
+        lineNumber++; // Increment line number
+        std::stringstream ss(line);
+        std::string requestingUser, motorbikeOwner;
+        time_t startTime, endTime;
+        double credit;
+        bool accepted;
+        bool rejected;
+
+        if (std::getline(ss, requestingUser, ',') &&
+            std::getline(ss, motorbikeOwner, ',') &&
+            ss >> startTime && ss.ignore() &&
+            ss >> endTime && ss.ignore() &&
+            ss >> credit && ss.ignore() &&
+            ss >> accepted && ss.ignore() &&
+            ss >> rejected) {
+            // Check if the motorbike owner matches the logged-in user's username
+            if (motorbikeOwner == loggedInUser.getUsername()) {
+                ownerHasRequests = true; // Owner has requests
+                requestNumber++;
+
+                // Create a RentalRequest object
+                RentalRequest request(requestingUser, motorbikeOwner, startTime, endTime, credit, accepted, rejected);
+
+                // Add the request to the rentalRequests vector
+                rentalRequests.push_back(request);
+
+                // Display the rental request information
+                std::cout << "All Rental Requests:" << std::endl;
+                std::cout << "Request " << requestNumber << " from: " << request.getRequestingUser() << std::endl;
+                std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
+                std::cout << "Start Time: " << timestampToString(request.getStartTime()) << std::endl;
+                std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
+                std::cout << "Credit: " << request.getCredit() << std::endl;
+                std::cout << "Accepted: " << request.isAccepted() << ", Rejected: " << request.isRejected() << std::endl;
+                if (request.isAccepted()) {
+                    std::cout << "Status: Accepted" << std::endl;
+                } else if (request.isRejected()) {
+                    std::cout << "Status: Rejected" << std::endl;
+                } else {
+                    std::cout << "Status: Pending" << std::endl;
+                }
+                std::cout << "-----------------------------" << std::endl;
+            }
+        } else {
+            std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
+        }
+    }
+
+    inFile.close();
+    if (!ownerHasRequests) {
+        std::cout << "You don't have any pending requests." << std::endl;
+        return;
+    }
+
+    int choice = 0;
+    do {
+        std::cout << "Enter the number of the request to accept (0 to exit): ";
+        std::cin >> choice;
+
+        if (choice >= 1 && choice <= rentalRequests.size()) {
+            RentalRequest& request = rentalRequests[choice - 1];
+            if (!request.isAccepted() && !request.isRejected()) {
+                // Process the selected request
+                request.setAccepted(true); // Accept the selected request
+                std::cout << "Request accepted." << std::endl;
+
+                // Update the status of other requests with the same renting time
+                for (RentalRequest& otherRequest : rentalRequests) {
+                    if (&otherRequest != &request && !otherRequest.isAccepted() && !otherRequest.isRejected() &&
+                        otherRequest.getStartTime() <= request.getEndTime() &&
+                        otherRequest.getEndTime() >= request.getStartTime()) {
+                        otherRequest.setRejected(true); // Mark as "Rejected"
+                    }
+                }
+
+                // Save the updated requests to the file
+                updateRentalRequestsToFile("rental_requests.txt", rentalRequests);
+            } else {
+                std::cout << "Request has already been accepted or rejected." << std::endl;
+            }
+        } else if (choice != 0) {
+            std::cout << "Invalid choice. Please try again." << std::endl;
+            std::cin.clear(); // Clear any error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        }
+    } while (choice != 0);
 }

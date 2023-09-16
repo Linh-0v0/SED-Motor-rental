@@ -64,12 +64,8 @@ public:
     std::string toFileString() const;
 
     //function to request to rent the motorbike
-    void requestToRentMotorbike(const std::string& requestingUser);
+    void requestToRentMotorbike(const std::string& requestingUser, const std::string& motorbikeOwner,  std::time_t startTime,std::time_t endTime, double credit);
 
-    //function to get pending rental requests
-    const std::vector<RentalRequest>& getPendingRequests() const;
-
-    void handlePendingRequest();
 
 };
 

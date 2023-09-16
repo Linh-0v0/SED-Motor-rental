@@ -7,13 +7,10 @@
 #include "../../include/utils/Time.h"
 using namespace std;
 
-int RentalRequest::requestIdCounter = 1;
 
 // Implement the RentalRequest constructor
-RentalRequest::RentalRequest(const std::string& requestingUser, const std::string& motorbikeOwner)
-    : requestingUser(requestingUser), motorbikeOwner(motorbikeOwner),accepted(false) {
-    // Generate a unique ID for the request
-    requestId = requestIdCounter++;
+RentalRequest::RentalRequest( const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, double credit, bool accepted, bool rejected)
+    : requestingUser(requestingUser), motorbikeOwner(motorbikeOwner), startTime(startTime), endTime(endTime), credit(credit), accepted(accepted), rejected(rejected) { 
     this->requestingUser = requestingUser;
     this->motorbikeOwner = motorbikeOwner;
 
@@ -31,6 +28,19 @@ const std::string& RentalRequest::getMotorbikeOwner() const {
     return motorbikeOwner;
 }
 
+
+std::time_t RentalRequest::getStartTime() const {
+    return startTime;
+}
+
+std::time_t RentalRequest::getEndTime() const {
+    return endTime;
+}
+
+double RentalRequest::getCredit() const {
+    return credit;
+}
+
 bool RentalRequest::isAccepted() const {
     return accepted;
 }
@@ -39,7 +49,10 @@ void RentalRequest::setAccepted(bool value) {
     accepted = value;
 }
 
-int RentalRequest::getRequestId() const
-{
-        return 0;
+bool  RentalRequest::isRejected() const {
+    return rejected;
+}
+
+void RentalRequest::setRejected(bool value) {
+    rejected = value;
 }

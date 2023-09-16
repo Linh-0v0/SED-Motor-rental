@@ -29,7 +29,7 @@ private:
     // motorbikes of user
     std::vector<Motorbike> availableMotorbikes;
 
-    std::vector<RentalRequest> pendingRequests;
+    std::vector<RentalRequest> rentalRequests;
 
 public:
     User();
@@ -64,8 +64,9 @@ public:
     void addMotorbikeToUser(const Motorbike &motorbike);
     double calcAverageRenterRating() const;
 
-    void handlePendingRequests(Motorbike& motorbike);
-    void addPendingRequest(const RentalRequest& request);
+    void addRentalRequest(const RentalRequest& request);
+    const std::vector<RentalRequest>& getRentalRequests() const;
+    
 };
 
 #endif
