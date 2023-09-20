@@ -1,10 +1,10 @@
 #ifndef USER_H
 #define USER_H
-#include <iostream> //use string
-#include <fstream>  //save to appdata.txt
-#include <limits>   //check integer
+#include <iostream>     //use string
+#include <fstream>      //save to appdata.txt
+#include <limits>       //check integer
 #include <string>
-#include <string.h> //use string function
+#include <string.h>     //use string function
 #include "Motorbike.h"
 #include "RentalRequest.h"
 

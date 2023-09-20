@@ -1,3 +1,4 @@
+#include "../../include/models/User.h"
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -7,6 +8,19 @@
 #include "../../include/models/Motorbike.h"
 #include "../../include/models/RentalRequest.h"
 using namespace std;
+
+
+// void READ_USER_INFO(){}
+
+// void APPEND_USER_INFO(member member1){
+//     cout << "\nYour infomation will be added in to our data base.";
+//     std::ofstream outfile;
+//     outfile.open("../../appdata.txt", std::ios_base::app); // append instead of overwrite
+    
+//     outfile << member1.USERS_NAME;
+// }
+
+// void MODIFY_USER_INFO(){}
 
 // Default constructor
 User::User() : username(""), fullName(""), phoneNumber(""), idType(0), idNumber(""), driverLicense(""), expiryDate(""), creditPoints(0), renterRatingScore(0){};
