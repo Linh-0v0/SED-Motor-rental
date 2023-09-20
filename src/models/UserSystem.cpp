@@ -335,6 +335,34 @@ void UserSystem::storeRentalRequest(const RentalRequest& request) {
 }
 
 
+void UserSystem::requestMotorbikeRental(UserSystem& userSystem, const User& loggedInUser, const std::vector<Motorbike>& availableMotorbikes) {
+    int choice = 0;
+
+    std::cout << "Enter the number of the motorbike you want to request (0 to cancel): ";
+    std::cin >> choice;
+
+    if (choice >= 1 && choice <= availableMotorbikes.size()) {
+        Motorbike selectedMotorbike = availableMotorbikes[choice - 1];
+        std::string ownerUsername = selectedMotorbike.getOwnerUsername();
+
+        // Access startTime and endTime from selectedMotorbike
+        std::time_t startTime = selectedMotorbike.getStartTime();
+        std::time_t endTime = selectedMotorbike.getEndTime();
+
+        // Request to rent the selected motorbike
+        selectedMotorbike.requestToRentMotorbike(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints());
+
+        bool accepted = false;
+        bool rejected = false;
+
+        RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints(), accepted, rejected);
+
+        userSystem.storeRentalRequest(request);
+    } else if (choice != 0) {
+        std::cout << "Invalid choice. Please try again." << std::endl;
+    }
+}
+
 void UserSystem::loadAndDisplayRentalRequests() {
     // Load rental requests from the file
     std::ifstream inFile("rental_requests.txt");
@@ -378,7 +406,8 @@ void UserSystem::loadAndDisplayRentalRequests() {
                 rentalRequests.push_back(request);
 
                 // Display the rental request information
-                std::cout << "All Rental Requests:" << std::endl;
+                std::cout << "ALL RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
+                std::cout << "-----------------------------" << std::endl;
                 std::cout << "Request " << requestNumber << " from: " << request.getRequestingUser() << std::endl;
                 std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
                 std::cout << "Start Time: " << timestampToString(request.getStartTime()) << std::endl;

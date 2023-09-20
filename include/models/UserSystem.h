@@ -66,6 +66,7 @@ public:
     void addPendingRequestToOwner(const RentalRequest& request);
     User* findUserByUsername(const std::string& username);
     void storeRentalRequest(const RentalRequest& request);
+    void requestMotorbikeRental(UserSystem& userSystem, const User& loggedInUser, const std::vector<Motorbike>& availableMotorbikes);
     void updateRentalRequestsToFile(const std::string& filename, const std::vector<RentalRequest>& updatedRequests); 
     void saveRentalRequestsToFile(const std::string& filename);
     void loadAndDisplayRentalRequests();
