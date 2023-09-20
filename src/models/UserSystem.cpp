@@ -351,6 +351,8 @@ void UserSystem::loadAndDisplayRentalRequests() {
     while (std::getline(inFile, line)) {
         lineNumber++; // Increment line number
         std::stringstream ss(line);
+        std::ostringstream ossCredit;
+        ossCredit << std::fixed << std::setprecision(1);
         std::string requestingUser, motorbikeOwner;
         time_t startTime, endTime;
         double credit;
@@ -381,7 +383,8 @@ void UserSystem::loadAndDisplayRentalRequests() {
                 std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
                 std::cout << "Start Time: " << timestampToString(request.getStartTime()) << std::endl;
                 std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
-                std::cout << "Credit: " << request.getCredit() << std::endl;
+                ossCredit << request.getCredit();
+                std::cout << "Credit: " << ossCredit.str() << std::endl;
                 std::cout << "Accepted: " << request.isAccepted() << ", Rejected: " << request.isRejected() << std::endl;
                 if (request.isAccepted()) {
                     std::cout << "Status: Accepted" << std::endl;
