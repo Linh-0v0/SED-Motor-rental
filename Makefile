@@ -1,15 +1,23 @@
 # Makefile
+# Specify the compiler and compilation flags
+CXX = g++
+CXXFLAGS = -std=c++11 -Wall
 
-CC = g++
-CFLAGS = -std=c++11
-SOURCES = src/models/User.cpp src/models/Motorbike.cpp src/services/RentalSystem.cpp src/utils/InputValidation.cpp main.cpp
-EXECUTABLE = motorbike-rental
+# Define the target executable name
+TARGET = bin/linh_program
 
+# Define the source files and object files
+SRCS = mainTest.cpp src/utils/Time.cpp src/models/User.cpp src/models/Admin.cpp src/models/Motorbike.cpp src/models/UserSystem.cpp 
+
+# Build rule to compile the program
+# $(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)
 all:
-	$(CC) $(CFLAGS) $(SOURCES) -o $(EXECUTABLE)
+	$(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)
 
 run:
-	./$(EXECUTABLE)
+	./$(TARGET)
 
+.PHONY: clean
 clean:
-	rm -f $(EXECUTABLE)
+#For mac
+	rm -f $(TARGET)
