@@ -1,3 +1,4 @@
+#include "../../include/models/User.h"
 #include <iomanip>
 #include <sstream>
 #include <ctime>
@@ -5,6 +6,8 @@
 #include "../../include/models/Motorbike.h"
 #include "../../include/utils/Time.h"
 using namespace std;
+
+// void APPEND_BIKE_INFO(motorbike motorbike1){}
 
 // Parameterized constructor
 Motorbike::Motorbike(const std::string &ownerUsername, const std::string &model, const std::string &color, const std::string &engineSize, const std::string &transmissionMode, int yearMade, const std::string &description, bool listedForRent, double motorbikeRating, double creditPerDay, double minRenterRating, std::time_t startTime, std::time_t endTime, std::string city) : ownerUsername(ownerUsername), model(model), color(color), engineSize(engineSize), transmissionMode(transmissionMode), yearMade(yearMade), description(description), listedForRent(listedForRent), motorbikeRating(motorbikeRating), creditPerDay(creditPerDay), minRenterRating(minRenterRating), startTime(startTime), endTime(endTime), city(city){};

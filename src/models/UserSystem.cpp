@@ -214,7 +214,7 @@ void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsC
     motorbike.setListedForRent(true);
     // Update list status in text file
     updateMotorbikeInFile(motorbike);
-    cout << "Motorbike has been listed for renting." << endl;
+    cout << "Motorbike has been listed for renting.\n" << endl;
 }
 
 // Disable the motorbike from renting
@@ -224,7 +224,7 @@ void UserSystem::unlistMotorbikeForRent(Motorbike &motorbike)
     motorbike.setListedForRent(false);
     // Update list status in text file
     updateMotorbikeInFile(motorbike);
-    cout << "Motorbike has been unlisted from renting." << endl;
+    cout << "Motorbike has been unlisted from renting.\n" << endl;
 }
 
 // Function to search for available motorbikes in a specified period
