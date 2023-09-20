@@ -4,6 +4,7 @@
 #include <map>
 #include "include/models/UserSystem.h"
 #include "include/models/RentalRequest.h"
+#include "include/utils/Time.h"
 using namespace std;
 
 int main()
@@ -67,7 +68,7 @@ int main()
 
     while (1)
     {
-        int USER_ROLE = 0, command = 0;
+        int USER_ROLE = 0, command = 10;
         // Intro:
         cout << "\n\nUse the app as \n1. Guest \n2. Member[sign in required] \n3. Admin [sign in required]";
         cout << "\nEnter your choice:";
@@ -135,7 +136,7 @@ int main()
                     // // }
 
                     /******* THINH ******/
-                    /***** CODE REGISTER MEMBER SAI RUI, DUNG CAI addMember(...) ay *****/
+                    /***** CODE REGISTER MEMBER SAI RUI, DUNG CAI addMember(...) trong `UserSystem.cpp` ay *****/
 
                     /**** CHUA CO CODE CHECK XEM Username existed chua ****/
                     cout << "\nYou are now a Member. Please sign in again.\n";
@@ -148,8 +149,6 @@ int main()
         // Access as Member
         else if (USER_ROLE == 2)
         {
-            // Reset command choice
-            command = 0;
             /**** Login ****/
             std::string username, password;
 
@@ -165,36 +164,47 @@ int main()
                 loggedInUser = userSystem.getLoggedInUser();
                 std::cout << "Login successful. Welcome, " << loggedInUser.getFullName() << "!\n";
 
-                cout << "This is your menu:" << endl;
-                while (!(command >= 0 && command <= 4))
+                while (1)
                 {
+                    cout << "\nThis is your menu:" << endl;
+                    cout << "0. Exit\n1. View information\n2. List motorbike for renting\n3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n";
+                    cout << "\nEnter your choice:";
                     cin >> command;
+
+                    while (!(command >= 0 && command <= 7))
+                    {
+                        cin >> command;
+                        if (cin.fail())
+                        {
+                            cin.clear();
+                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                            cout << "Invalid input. Please try again\n";
+                        }
+                    }
+
                     if (cin.fail())
                     {
                         cin.clear();
                         std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         cout << "Invalid input. Please try again\n";
                     }
-                }
-
-                while (1)
-                {
-                    cout << "0. Exit\n1. View information\n2. List motorbike for renting\n 3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n";
-                    cout << "\nEnter your choice:";
-                    cin >> command;
-
-                    if (command = 0)
+                    else if (command == 0)
                     {
                         break;
                     }
-                    else if (command = 1)
+                    else if (command == 1)
                     {
                         // Return User's Info
                         cout << endl;
                         cout << "**** USER'S INFO ****" << endl;
                         cout << loggedInUser << endl;
+                        // List motorbike of the current user
+                        for (const Motorbike &motorbike : loggedInUser.getAvailableMotorbikes())
+                        {
+                            cout << motorbike << endl;
+                        }
                     }
-                    else if (command = 2)
+                    else if (command == 2)
                     {
                         // List motorbike for rent (with rental amount per day, minimum required renter-rating, and city)
                         double credit, rating;
@@ -214,7 +224,7 @@ int main()
                             }
                         }
                     }
-                    else if (command = 3)
+                    else if (command == 3)
                     {
                         // Unlist motorbike (disable for renting), update in text file as well
                         for (Motorbike &motorbike : motorbikes)
@@ -225,10 +235,36 @@ int main()
                             }
                         }
                     }
-                    else if (command = 4)
+                    else if (command == 4)
                     {
+                        std::string startTime, endTime, city;
+                        cout << "\nEnter the renting time you need in this format `YYYY-MM-DD HH:MM::SS`.";
+                        do
+                        {
+                            cout << "\nStart from: ";
+                            std::cin.ignore();
+                            std::getline(cin, startTime);
+                            if (!isValidDateTime(startTime))
+                            {
+                                std::cout << "Invalid format. Please re-enter 'Start time' in this format `YYYY-MM-DD HH:MM::SS`" << std::endl;
+                            }
+                        } while (!isValidDateTime(startTime));
+
+                        do
+                        {
+                            cout << "\nEnd at: ";
+                            std::getline(cin, endTime);
+                            if (!isValidDateTime(endTime))
+                            {
+                                std::cout << "Invalid format. Please re-enter 'End time' in this format `YYYY-MM-DD HH:MM::SS`" << std::endl;
+                            }
+                        } while (!isValidDateTime(endTime));
+
+                        cout << "\nEnter city you want to rent motorbike from: ";
+                        std::getline(cin, city);
+
                         // Search Motorbikes available for 'a period of time' in 'a city' (suitable with the current user's 'credit points' and 'rating score')
-                        std::vector<Motorbike> availableMotorbikes = userSystem.searchAvailableMotorbikes(motorbikes, "2023-09-02 08:00:00", "2023-09-03 18:00:00", "Sai Gon", loggedInUser);
+                        std::vector<Motorbike> availableMotorbikes = userSystem.searchAvailableMotorbikes(motorbikes, startTime, endTime, city, loggedInUser);
                         cout << "\n***** Available motorbikes *****" << endl;
                         for (size_t i = 0; i < availableMotorbikes.size(); ++i)
                         {
@@ -236,15 +272,15 @@ int main()
                             std::cout << availableMotorbikes[i] << std::endl;
                         }
                     }
-                    else if (command = 5)
+                    else if (command == 5)
                     {
                         // Top up Credit
                         /*** THINH ****/
                     }
-                    else if (command = 6)
+                    else if (command == 6)
                     {
                         // view all requests to the motorbike
-                        /********NHAM********/
+                        /******NHAM*****/
                         // int choice = 0;
 
                         // std::cout << "Enter the number of the motorbike you want to request (0 to cancel): ";
@@ -280,79 +316,73 @@ int main()
 
                         /*****************************/
                     }
-
-                    // // List motorbike of the current user
-                    // for (const Motorbike &motorbike : loggedInUser.getAvailableMotorbikes())
-                    // {
-                    //     cout << motorbike << endl;
-                    // }
                 }
             }
+        }
 
-            // Access as Admin
-            else
+        // Access as Admin
+        else
+        {
+            /**** Login ****/
+            std::string username, password;
+
+            // Prompt the user for username and password
+            std::cout << "Enter the admin username:";
+            std::cin >> username;
+            std::cout << "Enter the admin password:";
+            std::cin >> password;
+
+            // // Check if the entered credentials are valid
+            if (userSystem.checkAdmin(username, password))
             {
-                /**** Login ****/
-                std::string username, password;
-
-                // Prompt the user for username and password
-                std::cout << "Enter the admin username:";
-                std::cin >> username;
-                std::cout << "Enter the admin password:";
-                std::cin >> password;
-
-                // // Check if the entered credentials are valid
-                if (userSystem.checkAdmin(username, password))
+                loggedInAdmin = userSystem.getAdmin();
+                cout << "Access Granted!\n\nYou are accessed as ";
+                cout << "Admin\n";
+                while (1)
                 {
-                    loggedInAdmin = userSystem.getAdmin();
-                    cout << "Access Granted!\n\nYou are accessed as ";
-                    cout << "Admin\n";
-                    while (1)
+                    cout << "As an admin, you can:\n1. Exit Program.\n2. View all motorbike details\n3. View all users detail.\n";
+                    cin >> command;
+                    if (cin.fail())
                     {
-                        cout << "As an admin, you can:\n1. Exit Program.\n2. View all motorbike details\n3. View all users detail.\n";
-                        cin >> command;
-                        if (cin.fail())
+                        cin.clear();
+                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        cout << "\nInvalid input. Please try again\n";
+                    }
+                    else if (command == 1)
+                    {
+                        break;
+                    }
+                    else if (command == 2)
+                    {
+                        // Print all motorbikes
+                        cout << "***** All Motorbikes *****" << endl;
+                        for (const Motorbike &motorbike : motorbikes)
                         {
-                            cin.clear();
-                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                            cout << "\nInvalid input. Please try again\n";
+                            std::cout << motorbike << endl;
                         }
-                        else if (command == 1)
+                        if (command == 1)
                         {
                             break;
                         }
-                        else if (command == 2)
+                    }
+                    else if (command == 3)
+                    {
+                        // Print All Users
+                        std::vector<User> &users = userSystem.getUsers();
+                        for (const User &user : users)
                         {
-                            // Print all motorbikes
-                            cout << "***** All Motorbikes *****" << endl;
-                            for (const Motorbike &motorbike : motorbikes)
-                            {
-                                std::cout << motorbike << endl;
-                            }
-                            if (command == 1)
-                            {
-                                break;
-                            }
+                            std::cout << user << endl;
                         }
-                        else if (command == 3)
+                        if (command == 1)
                         {
-                            // Print All Users
-                            std::vector<User> &users = userSystem.getUsers();
-                            for (const User &user : users)
-                            {
-                                std::cout << user << endl;
-                            }
-                            if (command == 1)
-                            {
-                                break;
-                            }
+                            break;
                         }
                     }
                 }
-                else
-                {
-                    std::cout << "\nLogin failed. Invalid username or password.\n";
-                }
+            }
+            else
+            {
+                std::cout << "\nLogin failed. Invalid username or password.\n";
             }
         }
     }

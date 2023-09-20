@@ -31,3 +31,13 @@ std::string timestampToString(std::time_t timestamp) {
     oss << std::put_time(&tm, "%Y-%m-%d %H:%M:%S");
     return oss.str();
 }
+
+bool isValidDateTime(const std::string& input) {
+    std::tm tm = {};
+    std::istringstream ss(input);
+
+    // Define the expected time string format (YYYY-MM-DD HH:MM:SS)
+    ss >> std::get_time(&tm, "%Y-%m-%d %H:%M:%S");
+
+    return !ss.fail();
+}
