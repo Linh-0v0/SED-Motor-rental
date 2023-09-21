@@ -64,7 +64,7 @@ int main()
     cout << "\nMOTORBIKE RENTAL APPLICATION";
     cout << "\nInstructor: Dr. Ling Huo Chong";
     cout << "\nGroup: Group No.";
-    cout << "\ns3805869, Student Name: Nguyen Truong Thinh.\nsXXXXXXX, Student Name:\nsXXXXXXX, Student Name:";
+    cout << "\ns3805869, Student Name: Nguyen Truong Thinh.\ns3878533, Student Name: Nguyen Hoang To Nhu.\nsXXXXXXX, Student Name:";
 
     while (1)
     {
@@ -271,6 +271,7 @@ int main()
                             std::cout << "Option " << (i + 1) << ":" << std::endl;
                             std::cout << availableMotorbikes[i] << std::endl;
                         }
+                        userSystem.requestMotorbikeRental(userSystem, loggedInUser, availableMotorbikes);
                     }
                     else if (command == 5)
                     {
@@ -279,40 +280,7 @@ int main()
                     }
                     else if (command == 6)
                     {
-                        // view all requests to the motorbike
-                        /******NHAM*****/
-                        // int choice = 0;
-
-                        // std::cout << "Enter the number of the motorbike you want to request (0 to cancel): ";
-                        // std::cin >> choice;
-
-                        // if (choice >= 1 && choice <= availableMotorbikes.size())
-                        // {
-                        //     Motorbike selectedMotorbike = availableMotorbikes[choice - 1];
-                        //     std::string ownerUsername = selectedMotorbike.getOwnerUsername();
-                        //     std::string username = loggedInUser.getUsername();
-                        //     // Prompt the user for additional information (credit, id, etc.)
-                        //     double credit;
-                        //     bool accepted = false;
-                        //     bool rejected = false;
-
-                        //     // Access startTime and endTime from selectedMotorbike
-                        //     std::time_t startTime = selectedMotorbike.getStartTime();
-                        //     std::time_t endTime = selectedMotorbike.getEndTime();
-
-                        //     // Request to rent the selected motorbike
-                        //     selectedMotorbike.requestToRentMotorbike(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints());
-
-                        //     RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, credit, accepted, rejected);
-
-                        //     userSystem.storeRentalRequest(request);
-                        // }
-                        // else if (choice != 0)
-                        // {
-                        //     std::cout << "Invalid choice. Please try again." << std::endl;
-                        // }
-
-                        // userSystem.loadAndDisplayRentalRequests();
+                        userSystem.loadAndDisplayRentalRequests();
 
                         /*****************************/
                     }

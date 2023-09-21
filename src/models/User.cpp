@@ -26,7 +26,7 @@ using namespace std;
 User::User() : username(""), fullName(""), phoneNumber(""), idType(0), idNumber(""), driverLicense(""), expiryDate(""), creditPoints(0), renterRatingScore(0){};
 
 // Parameterized constructor
-User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRatingScore) : username(username), fullName(fullName), password(password), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRatingScore) {}
+User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRatingScore) : username(username), password(password), fullName(fullName), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRatingScore) {}
 
 /***** Getter *****/
 std::string User::getUsername() const
