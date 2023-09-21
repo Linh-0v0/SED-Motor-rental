@@ -183,8 +183,8 @@ int main()
             // // Check if the entered credentials are valid
             if (userSystem.checkLogin(username, password))
             {
-                cout << "Login successful. Welcome, " << loggedInUser.getFullName() << "!\n";
                 loggedInUser = userSystem.getLoggedInUser();
+                cout << "Login successful. Welcome, " << loggedInUser.getFullName() << "!\n";
 
                 while (1)
                 {

@@ -112,6 +112,15 @@ std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike)
 }
 
 /***** Others *****/
+void Motorbike::addToComments(const std::string &comment)
+{
+    comments.push_back(comment);
+}
+
+void Motorbike::addToMotorbikeRatings(double rating) {
+    motorbikeRatings.push_back(rating);
+}
+
 double Motorbike::calcAverageMotorbikeRating() const
 {
     if (motorbikeRatings.empty())
@@ -146,12 +155,13 @@ std::string Motorbike::toFileString() const
     return result;
 }
 
-
 // Implement the requestToRentMotorbike function
 
-void Motorbike::requestToRentMotorbike(const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, double credit) {
+void Motorbike::requestToRentMotorbike(const std::string &requestingUser, const std::string &motorbikeOwner, std::time_t startTime, std::time_t endTime, double credit)
+{
     // Check if the motorbike is available for rent
-    if (listedForRent) {
+    if (listedForRent)
+    {
         // Create a rental request
         RentalRequest request(requestingUser, ownerUsername, startTime, endTime, credit, false, false);
 
@@ -159,11 +169,11 @@ void Motorbike::requestToRentMotorbike(const std::string& requestingUser, const 
         pendingRequests.push_back(request);
 
         cout << "Request to rent the motorbike has been sent." << endl;
-    } else {
+    }
+    else
+    {
         cout << "This motorbike is not available for rent at the moment." << endl;
     }
-
 }
 
 // ...
-

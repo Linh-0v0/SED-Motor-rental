@@ -23,7 +23,7 @@ private:
     int yearMade;
     std::string description;
     bool listedForRent;
-    std::vector<std::string> reviews;
+    std::vector<std::string> comments;
     std::vector<double> motorbikeRatings;
     double motorbikeRating; //average of `motorbikeRatings`
 
@@ -61,6 +61,8 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike);
 
     /*Others*/
+    void addToComments(const std::string &comment);
+    void addToMotorbikeRatings(double rating);
     double calcAverageMotorbikeRating() const; // return the average valuef for MotorbikeRating
     // Method to convert Motorbike data to a formatted string for writing to the file
     std::string toFileString() const;

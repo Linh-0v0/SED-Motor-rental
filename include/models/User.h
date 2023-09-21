@@ -2,6 +2,7 @@
 #define USER_H
 #include <iostream> //use string
 #include <fstream>  //save to appdata.txt
+#include <vector>
 #include <limits>   //check integer
 #include <string>
 #include <string.h> //use string function
@@ -21,6 +22,7 @@ private:
     std::string idNumber;
     std::string driverLicense;
     std::string expiryDate;
+    std::vector<std::string> comments;
     double creditPoints;
     std::vector<double> renterRatingScores;
     double renterRatingScore; // average of `renterRatingScores`
@@ -63,13 +65,10 @@ public:
     /*Operator*/
     friend std::ostream &operator<<(std::ostream &os, const User &user);
 
-    /*Update*/
-    // Function to update credit points
-    void updateCreditPoints(double newCreditPoints);
-    void updateRenterRatingScore(double newScore);
-
     /*Others*/
     void printAvailableMotorbikes() const;
+    void addToComments(const std::string& comment);
+    void addToRenterRatings(double rating);
     void addMotorbikeToUser(const Motorbike &motorbike);
     void topUpCreditPoints(double amount);
     double calcAverageRenterRating() const;

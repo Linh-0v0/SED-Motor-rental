@@ -645,3 +645,20 @@ void UserSystem::loadAndDisplayRentalRequests()
         }
     } while (choice != 0);
 }
+
+//Add new rating score and Update the avarage value of all renter-rating scores
+void UserSystem::addRenterRatingScore(User& user, double value) {
+    user.addToRenterRatings(value);
+    double avgValue = user.calcAverageRenterRating();
+    user.setRenterRatingScore(avgValue);
+    //Update to txt file
+    updateUserInFile(user);
+}
+// Add new rating score and Update to the avarage value of all motorbike-rating scores
+void UserSystem::addMotorbikeRatingScore(Motorbike& motorbike, double value) {
+    motorbike.addToMotorbikeRatings(value);
+    double avgValue = motorbike.calcAverageMotorbikeRating();
+    motorbike.setMotorbikeRating(avgValue);
+    //Update to txt file
+    updateMotorbikeInFile(motorbike);
+}

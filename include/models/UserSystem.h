@@ -79,6 +79,11 @@ public:
     void saveRentalRequestsToFile(const std::string& filename);
     void loadAndDisplayRentalRequests();
     void acceptOrRejectRequest();
+
+    // Add new rating score and Update to the avarage value of all renter-rating scores
+    void addRenterRatingScore(User& user, double value);
+    // Add new rating score and Update to the avarage value of all motorbike-rating scores
+    void addMotorbikeRatingScore(Motorbike& motorbike, double value);
 };
 
 #endif

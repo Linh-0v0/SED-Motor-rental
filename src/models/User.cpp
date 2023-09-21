@@ -118,7 +118,6 @@ void User::setRenterRatingScore(double newRenterRatingScore)
     renterRatingScore = newRenterRatingScore;
 }
 
-
 /***** Operator *****/
 std::ostream &operator<<(std::ostream &os, const User &user)
 {
@@ -144,6 +143,16 @@ void User::printAvailableMotorbikes() const
     {
         cout << motorbike << endl;
     }
+}
+
+void User::addToComments(const std::string &comment)
+{
+    comments.push_back(comment);
+}
+
+void User::addToRenterRatings(double rating)
+{
+    renterRatingScores.push_back(rating);
 }
 
 void User::addMotorbikeToUser(const Motorbike &motorbike)
