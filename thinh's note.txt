@@ -1,7 +1,0 @@
-Explain & future plan:
-
-Basically sau khi guest nhập thông tin vào member thì đẩy hết thông tin vào appdata (1 hàng), check nếu có xe (member1.BIKE_AVAILABLE) thì đẩy xe vào hàng 2, nếu không có thì hàng trống.
-
-Sau đó ta sẽ có app data hàng lẻ là thông tin user, hàng chẵn là thông tin bike, không có thì trống.
-
-Dùng loop để read từng line , split và để vào variable, có lẽ thêm vào class thay vì function sẽ hợp hơn?
