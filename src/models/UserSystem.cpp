@@ -566,7 +566,7 @@ void UserSystem::loadAndDisplayRentalRequests()
                 rentalRequests.push_back(request);
 
                 // Display the rental request information
-                std::cout << "ALL RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
+                std::cout << "RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
                 std::cout << "-----------------------------" << std::endl;
                 std::cout << "Request " << requestNumber << " from: " << request.getRequestingUser() << std::endl;
                 std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
@@ -574,7 +574,6 @@ void UserSystem::loadAndDisplayRentalRequests()
                 std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
                 ossCredit << request.getCredit();
                 std::cout << "Credit: " << ossCredit.str() << std::endl;
-                std::cout << "Accepted: " << request.isAccepted() << ", Rejected: " << request.isRejected() << std::endl;
                 if (request.isAccepted())
                 {
                     std::cout << "Status: Accepted" << std::endl;
