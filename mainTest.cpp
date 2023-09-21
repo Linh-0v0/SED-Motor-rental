@@ -120,8 +120,14 @@ int main()
                     int idType;
                     double creditPoints;
                     cout << "*** Register ***\n";
+
                     cout << "Enter username: ";
                     cin >> username;
+                    if (userSystem.isUsernameExisted(username))
+                    {
+                        cout << "Username already exists.\n";
+                        break;
+                    }
                     cout << "Enter full name: ";
                     cin.ignore();
                     std::getline(cin, fullName);
@@ -214,8 +220,8 @@ int main()
                         // Return User's Info
                         cout << endl;
                         cout << "**** USER'S INFO ****" << endl;
-                        //in case user's data is updated during executing updating request below
-                        userSystem.updateLoggedInUserInfo(); 
+                        // in case user's data is updated during executing updating request below
+                        userSystem.updateLoggedInUserInfo();
                         // List motorbike of the current user
                         for (const Motorbike &motorbike : loggedInUser.getAvailableMotorbikes())
                         {
