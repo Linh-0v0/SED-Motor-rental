@@ -2,6 +2,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <sstream>
 #include <fstream>
 #include <vector>
 #include "../../include/models/User.h"
@@ -9,24 +10,11 @@
 #include "../../include/models/RentalRequest.h"
 using namespace std;
 
-
-// void READ_USER_INFO(){}
-
-// void APPEND_USER_INFO(member member1){
-//     cout << "\nYour infomation will be added in to our data base.";
-//     std::ofstream outfile;
-//     outfile.open("../../appdata.txt", std::ios_base::app); // append instead of overwrite
-    
-//     outfile << member1.USERS_NAME;
-// }
-
-// void MODIFY_USER_INFO(){}
-
 // Default constructor
 User::User() : username(""), fullName(""), phoneNumber(""), idType(0), idNumber(""), driverLicense(""), expiryDate(""), creditPoints(0), renterRatingScore(0){};
 
 // Parameterized constructor
-User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRatingScore) : username(username), password(password), fullName(fullName), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRatingScore) {}
+User::User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, double creditPoints, double renterRatingScore) : username(username), password(password), fullName(fullName), phoneNumber(phoneNumber), idType(idType), idNumber(idNumber), driverLicense(driverLicense), expiryDate(expiryDate), creditPoints(creditPoints), renterRatingScore(renterRatingScore) {}
 
 /***** Getter *****/
 std::string User::getUsername() const
@@ -42,6 +30,31 @@ std::string User::getFullName() const
 std::string User::getPassword() const
 {
     return password;
+}
+
+std::string User::getPhoneNumber() const
+{
+    return phoneNumber;
+}
+
+int User::getIdType() const
+{
+    return idType;
+}
+
+std::string User::getIdNumber() const
+{
+    return idNumber;
+}
+
+std::string User::getDriverLicense() const
+{
+    return driverLicense;
+}
+
+std::string User::getExpiryDate() const
+{
+    return expiryDate;
 }
 
 double User::getCreditPoints() const
@@ -105,6 +118,7 @@ void User::setRenterRatingScore(double newRenterRatingScore)
     renterRatingScore = newRenterRatingScore;
 }
 
+
 /***** Operator *****/
 std::ostream &operator<<(std::ostream &os, const User &user)
 {
@@ -144,22 +158,48 @@ void User::addMotorbikeToUser(const Motorbike &motorbike)
     }
 }
 
+void User::topUpCreditPoints(double amount)
+{
+    creditPoints += amount;
+}
+
 double User::calcAverageRenterRating() const
 {
-    if (renterRatingScores.empty()) {
+    if (renterRatingScores.empty())
+    {
         return 0.0;
     }
     float sum = 0.0;
-    for (float rating : renterRatingScores) {
+    for (float rating : renterRatingScores)
+    {
         sum += rating;
     }
     return sum / renterRatingScores.size();
 }
 
-void User::addRentalRequest(const RentalRequest& request) {
+void User::addRentalRequest(const RentalRequest &request)
+{
     rentalRequests.push_back(request);
 }
 
-const std::vector<RentalRequest>& User::getRentalRequests() const {
+const std::vector<RentalRequest> &User::getRentalRequests() const
+{
     return rentalRequests;
+}
+
+// Function to convert user data to a string format for saving to the file
+std::string User::toFileString() const
+{
+    std::stringstream ss;
+    ss << username << ","
+       << fullName << ","
+       << password << ","
+       << phoneNumber << ","
+       << idType << ","
+       << idNumber << ","
+       << driverLicense << ","
+       << expiryDate << ","
+       << creditPoints << ","
+       << 10; // default renter rating score
+    return ss.str();
 }

@@ -1,10 +1,10 @@
 #ifndef USER_H
 #define USER_H
-#include <iostream>     //use string
-#include <fstream>      //save to appdata.txt
-#include <limits>       //check integer
+#include <iostream> //use string
+#include <fstream>  //save to appdata.txt
+#include <limits>   //check integer
 #include <string>
-#include <string.h>     //use string function
+#include <string.h> //use string function
 #include "Motorbike.h"
 #include "RentalRequest.h"
 
@@ -23,7 +23,7 @@ private:
     std::string expiryDate;
     double creditPoints;
     std::vector<double> renterRatingScores;
-    double renterRatingScore; //average of `renterRatingScores`
+    double renterRatingScore; // average of `renterRatingScores`
     // motorbikes that user rents from others
     std::vector<Motorbike> rentedMotorbikes;
     // motorbikes of user
@@ -33,15 +33,19 @@ private:
 
 public:
     User();
-    User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, int creditPoints, double renterRataingScore);
+    User(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, double creditPoints, double renterRataingScore);
 
     /*Getter*/
     std::string getFullName() const;
     std::string getUsername() const;
     std::string getPassword() const;
+    std::string getPhoneNumber() const;
+    int getIdType() const;
+    std::string getIdNumber() const;
+    std::string getDriverLicense() const;
+    std::string getExpiryDate() const;
     double getCreditPoints() const;
     double getRenterRatingScore() const;
-
     const std::vector<Motorbike> &getAvailableMotorbikes() const;
 
     /*Setter*/
@@ -59,14 +63,20 @@ public:
     /*Operator*/
     friend std::ostream &operator<<(std::ostream &os, const User &user);
 
+    /*Update*/
+    // Function to update credit points
+    void updateCreditPoints(double newCreditPoints);
+    void updateRenterRatingScore(double newScore);
+
     /*Others*/
     void printAvailableMotorbikes() const;
     void addMotorbikeToUser(const Motorbike &motorbike);
+    void topUpCreditPoints(double amount);
     double calcAverageRenterRating() const;
 
-    void addRentalRequest(const RentalRequest& request);
-    const std::vector<RentalRequest>& getRentalRequests() const;
-    
+    void addRentalRequest(const RentalRequest &request);
+    const std::vector<RentalRequest> &getRentalRequests() const;
+    std::string toFileString() const;
 };
 
 #endif

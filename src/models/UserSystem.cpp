@@ -136,20 +136,76 @@ bool UserSystem::importMotorbikes()
 }
 
 // Method to add a User to the users vector
-void UserSystem::addUser(const User &user)
+bool UserSystem::addUser(const User &user)
 {
     users.push_back(user);
-    /////// Add to text file code
+    // Add user to text file code
+    std::ofstream outFile("appdata.txt", std::ios::app);
+    if (!outFile.is_open())
+    {
+        std::cerr << "Cannot open file for writing!" << std::endl;
+        return false;
+    }
+    // Format the user data and write it to the file
+    outFile << user.getUsername() << ","
+            << user.getFullName() << ","
+            << user.getPassword() << ","
+            << user.getPhoneNumber() << ","
+            << user.getIdType() << ","
+            << user.getIdNumber() << ","
+            << user.getDriverLicense() << ","
+            << user.getExpiryDate() << ","
+            << user.getCreditPoints() << ","
+            << user.getRenterRatingScore() << "\n";
+
+    outFile.close();
+    return true;
 }
 
 // Method to add a Motorbike to the motorbikes vector
-void UserSystem::addMotorbike(const Motorbike &motorbike)
+bool UserSystem::addMotorbike(const Motorbike &motorbike)
 {
     motorbikes.push_back(motorbike);
-    /////// Add to text file code
+    // Add motorbike to text file code
+    std::ofstream outFile("motorbikes.txt", std::ios::app); // Open in append mode to add new motorbike
+    if (!outFile.is_open())
+    {
+        std::cerr << "Cannot open file for writing!" << std::endl;
+        return false;
+    }
+    // Format the motorbike data and write it to the file
+    outFile << motorbike.toFileString() << "\n";
+
+    outFile.close();
+    return true;
 }
 
 /***** Update data *****/
+void UserSystem::updateUserInFile(const User &updatedUser)
+{
+    for (User &user : users)
+    {
+        if (user.getUsername() == updatedUser.getUsername())
+        {
+            user = updatedUser;
+            break;
+        }
+    }
+    std::ofstream outFile("appdata.txt");
+    if (!outFile.is_open())
+    {
+        std::cerr << "Cannot open file for writing!";
+        return;
+    }
+    // Write the data from data structure (e.g., vector or map) to the text file
+    for (const User &user : users)
+    {
+        outFile << user.toFileString() << "\n";
+    }
+
+    outFile.close();
+}
+
 void UserSystem::updateMotorbikeInFile(const Motorbike &updatedMotorbike)
 {
     for (Motorbike &motorbike : motorbikes)
@@ -177,7 +233,69 @@ void UserSystem::updateMotorbikeInFile(const Motorbike &updatedMotorbike)
     outFile.close();
 }
 
+void UserSystem::updateLoggedInUserInfo()
+{
+    for (const User &user : users)
+    {
+        if (user.getUsername() == loggedInUser.getUsername())
+        {
+            // get lastest loggedInUser info considered user might be updated
+            loggedInUser = user;
+            cout << user << endl;
+            break;
+        }
+    }
+}
+
 /***** Others *****/
+bool UserSystem::registerNewUser(const std::string &username, const std::string &fullName, const std::string &password, std::string phoneNumber, int idType, const std::string &idNumber, const std::string &driverLicense, const std::string &expiryDate, double creditPoints)
+{
+    if (isUsernameExisted(username))
+    {
+        std::cout << "Username already exists. Registration failed." << std::endl;
+        return false; // Registration failed
+    }
+
+    User newUser(username, fullName, password, phoneNumber, idType, idNumber, driverLicense, expiryDate, creditPoints, 10);
+    // Add to System and txt file
+    if (addUser(newUser))
+    {
+        std::cout << "Registration successful!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error in registration" << std::endl;
+    }
+    return true;
+}
+
+// Check if a username already exists in the system
+bool UserSystem::isUsernameExisted(const std::string &username) const
+{
+    for (const User &user : users)
+    {
+        if (user.getUsername() == username)
+        {
+            return true; // Username exists
+        }
+    }
+    return false; // Username does not exist
+}
+
+bool UserSystem::registerNewMotorbike(const Motorbike &newMotorbike)
+{
+    // Add the motorbike to the system and txt file
+    if (addMotorbike(newMotorbike))
+    {
+        std::cout << "Motorbike registration successful!" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error in motorbike registration" << std::endl;
+    }
+    return true;
+}
+
 bool UserSystem::checkAdmin(const std::string &inputUsername, const std::string &inputPassword)
 {
     return (inputUsername == "linhsieuquay" && inputPassword == "dobiet");
@@ -204,6 +322,22 @@ void UserSystem::logout()
     loggedInUser = User();
 }
 
+// Function to top up credit points for a user
+bool UserSystem::topUpUserCreditPoints(const std::string &username, double amount)
+{
+    for (User &user : users)
+    {
+        if (user.getUsername() == username)
+        {
+            user.topUpCreditPoints(amount);
+            // Update user in txt file
+            updateUserInFile(user);
+            return true; // User found and credit points topped up
+        }
+    }
+    return false; // User not found
+}
+
 // Enable for motorbike renting (require the owner to input the motorbike requirement)
 void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsConsumed, double minRequiredRenterRating, std::string city)
 {
@@ -213,10 +347,21 @@ void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsC
     motorbike.setCity(city);
     // Set the motorbike as listed for rent
     motorbike.setListedForRent(true);
-    // Update list status in text file
-    updateMotorbikeInFile(motorbike);
-    cout << "Motorbike has been listed for renting.\n"
-         << endl;
+    // Check if the ownerUsername already exists in the system
+    for (const Motorbike &existingMotorbike : motorbikes)
+    {
+        if (existingMotorbike.getOwnerUsername() == motorbike.getOwnerUsername())
+        {
+            // Update list status in text file
+            updateMotorbikeInFile(motorbike);
+            cout << "Motorbike has been listed for renting.\n"
+                 << endl;
+        }
+        else
+        {
+            addMotorbike(motorbike);
+        }
+    }
 }
 
 // Disable the motorbike from renting

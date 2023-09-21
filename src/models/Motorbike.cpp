@@ -12,7 +12,7 @@ using namespace std;
 // void APPEND_BIKE_INFO(motorbike motorbike1){}
 
 // Parameterized constructor
-Motorbike::Motorbike(const std::string &ownerUsername, const std::string &model, const std::string &color, const std::string &engineSize, const std::string &transmissionMode, int yearMade, const std::string &description, bool listedForRent, double motorbikeRating, double creditPerDay, double minRenterRating, std::time_t startTime, std::time_t endTime, std::string city) : ownerUsername(ownerUsername), model(model), color(color), engineSize(engineSize), transmissionMode(transmissionMode), yearMade(yearMade), description(description), listedForRent(listedForRent), motorbikeRating(motorbikeRating), creditPerDay(creditPerDay), minRenterRating(minRenterRating), startTime(startTime), endTime(endTime), city(city){};
+Motorbike::Motorbike(const std::string &ownerUsername, const std::string &model, const std::string &color, const std::string &engineSize, const std::string &transmissionMode, int yearMade, const std::string &description, bool listedForRent, double motorbikeRating, double creditPerDay, double minRenterRating, std::time_t startTime, std::time_t endTime, std::string &city) : ownerUsername(ownerUsername), model(model), color(color), engineSize(engineSize), transmissionMode(transmissionMode), yearMade(yearMade), description(description), listedForRent(listedForRent), motorbikeRating(motorbikeRating), creditPerDay(creditPerDay), minRenterRating(minRenterRating), startTime(startTime), endTime(endTime), city(city){};
 
 /***** Getter *****/
 std::string Motorbike::getOwnerUsername() const
@@ -96,7 +96,7 @@ std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike)
 
     os << "This is a property of member: " << motorbike.ownerUsername << endl;
     os << "Model : " << motorbike.model << endl;
-    os << "Color:  " << motorbike.color << endl;
+    os << "Color: " << motorbike.color << endl;
     os << "Engine size: " << motorbike.engineSize << endl;
     os << "Transmission mode: " << motorbike.transmissionMode << endl;
     os << "Description: " << motorbike.description << endl;
