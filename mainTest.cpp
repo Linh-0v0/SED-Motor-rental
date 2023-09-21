@@ -420,7 +420,6 @@ int main()
                     else if (command == 3)
                     {
                         // Print All Users
-                        std::vector<User> &users = userSystem.getUsers();
                         for (const User &user : users)
                         {
                             cout << user << endl;
