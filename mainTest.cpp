@@ -17,33 +17,25 @@ int main()
     // Load user data from a text file
     if (userSystem.importUsers())
     {
-        std::cout << "User data loaded successfully." << std::endl;
+        cout << "User data loaded successfully." << std::endl;
     }
     else
     {
         std::cerr << "Error loading user data." << std::endl;
         return 1; // Exit with an error code
     }
-    // Print All Users
     std::vector<User> &users = userSystem.getUsers();
-    // for (const User &user : users)
-    // {
-    //     std::cout << user << endl;
-    // }
 
     // Load motorbike data from a text file
     if (userSystem.importMotorbikes())
     {
-        std::cout << "Motorbike data loaded successfully." << std::endl;
+        cout << "Motorbike data loaded successfully." << std::endl;
     }
     else
     {
         std::cerr << "Error loading motorbike data." << std::endl;
         return 1; // Exit with an error code
     }
-
-    // userSystem.loadRentalRequestsFromFile("rental_requests.txt");
-
     std::vector<Motorbike> &motorbikes = userSystem.getMotorbikes();
 
     // Add the Motorbike to corresponding User
@@ -64,7 +56,7 @@ int main()
     cout << "\nMOTORBIKE RENTAL APPLICATION";
     cout << "\nInstructor: Dr. Ling Huo Chong";
     cout << "\nGroup: Group No.";
-    cout << "\ns3805869, Student Name: Nguyen Truong Thinh.\nsXXXXXXX, Student Name:\nsXXXXXXX, Student Name:";
+    cout << "\ns3805869, Student Name: Nguyen Truong Thinh.\ns3878533, Student Name: Nguyen Hoang To Nhu.\ns3864120, Student Name: Vu Bui Khanh Linh";
 
     while (1)
     {
@@ -80,7 +72,7 @@ int main()
             if (cin.fail())
             {
                 cin.clear();
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                 cout << "Invalid input. Please try again\n";
             }
         }
@@ -98,7 +90,7 @@ int main()
                 if (cin.fail())
                 {
                     cin.clear();
-                    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                    cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                     cout << "Invalid input. Please try again\n";
                 }
                 else if (command == 1)
@@ -111,7 +103,7 @@ int main()
                     cout << "***** All Motorbikes *****" << endl;
                     for (const Motorbike &motorbike : motorbikes)
                     {
-                        std::cout << motorbike << endl;
+                        cout << motorbike << endl;
                     }
                     if (command == 1)
                     {
@@ -120,25 +112,55 @@ int main()
                 }
                 else if (command == 3 || command == 4)
                 {
-                    // if (command == 3){cout << "In order to rent a bike, you need to register first.\n";}
-                    // bike = member1.NEW_MEMBER();
-                    // if (bike){
-                    //     motorbike1.NEW_BIKE(member1.USERS_NAME);
-                    // }
+                    if (command == 3)
+                    {
+                        cout << "In order to rent a bike, you need to register first.\n";
+                    }
+                    std::string username, fullName, password, phoneNumber, idNumber, driverLicense, expiryDate;
+                    int idType;
+                    double creditPoints;
+                    cout << "*** Register ***\n";
 
-                    // // Add to appdata.txt
-                    // // APPEND_USER_INFO(member1);
-                    // // member1.showinfo();
-                    // // if (bike){
-                    // //     //
-                    // //     APPEND_BIKE_INFO(motorbike1);
-                    // //     motorbike1.showinfo();
-                    // // }
+                    cout << "Enter username: ";
+                    cin >> username;
+                    if (userSystem.isUsernameExisted(username))
+                    {
+                        cout << "Username already exists.\n";
+                        break;
+                    }
+                    cout << "Enter full name: ";
+                    cin.ignore();
+                    std::getline(cin, fullName);
+                    cout << "Enter password: ";
+                    cin >> password;
+                    cout << "Enter phone number: ";
+                    cin >> phoneNumber;
+                    cout << "Enter ID type (1 for Citizen ID, 2 for Passport): ";
+                    cin >> idType;
+                    cout << "Enter ID number: ";
+                    cin >> idNumber;
+                    cout << "Enter driver's license: ";
+                    cin >> driverLicense;
+                    cout << "Enter expiry date (YYYY-MM-DD): ";
+                    cin >> expiryDate;
 
-                    /******* THINH ******/
-                    /***** CODE REGISTER MEMBER SAI RUI, DUNG CAI addMember(...) trong `UserSystem.cpp` ay *****/
+                    bool validInput = false;
+                    do
+                    {
+                        cout << "Top up your credit points, please enter a number: ";
+                        if (cin >> creditPoints)
+                        {
+                            validInput = true; // Input is a valid double
+                        }
+                        else
+                        {
+                            cout << "Invalid input. Please enter a valid double." << std::endl;
+                            cin.clear();                                                   // Clear error state
+                            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear input buffer
+                        }
+                    } while (!validInput);
+                    userSystem.registerNewUser(username, fullName, password, phoneNumber, idType, idNumber, driverLicense, expiryDate, creditPoints);
 
-                    /**** CHUA CO CODE CHECK XEM Username existed chua ****/
                     cout << "\nYou are now a Member. Please sign in again.\n";
                     USER_ROLE = 2;
                     break;
@@ -153,19 +175,20 @@ int main()
             std::string username, password;
 
             // Prompt the user for username and password
-            std::cout << "Enter your username:";
-            std::cin >> username;
-            std::cout << "Enter your password:";
-            std::cin >> password;
+            cout << "Enter your username:";
+            cin >> username;
+            cout << "Enter your password:";
+            cin >> password;
 
             // // Check if the entered credentials are valid
             if (userSystem.checkLogin(username, password))
             {
+                cout << "Login successful. Welcome, " << loggedInUser.getFullName() << "!\n";
                 loggedInUser = userSystem.getLoggedInUser();
-                std::cout << "Login successful. Welcome, " << loggedInUser.getFullName() << "!\n";
 
                 while (1)
                 {
+
                     cout << "\nThis is your menu:" << endl;
                     cout << "0. Exit\n1. View information\n2. List motorbike for renting\n3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n";
                     cout << "\nEnter your choice:";
@@ -177,7 +200,7 @@ int main()
                         if (cin.fail())
                         {
                             cin.clear();
-                            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                             cout << "Invalid input. Please try again\n";
                         }
                     }
@@ -185,7 +208,7 @@ int main()
                     if (cin.fail())
                     {
                         cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         cout << "Invalid input. Please try again\n";
                     }
                     else if (command == 0)
@@ -197,30 +220,88 @@ int main()
                         // Return User's Info
                         cout << endl;
                         cout << "**** USER'S INFO ****" << endl;
-                        cout << loggedInUser << endl;
+                        // in case user's data is updated during executing updating request below
+                        userSystem.updateLoggedInUserInfo();
                         // List motorbike of the current user
                         for (const Motorbike &motorbike : loggedInUser.getAvailableMotorbikes())
                         {
                             cout << motorbike << endl;
                         }
+                        cout << "*****\n";
                     }
                     else if (command == 2)
                     {
-                        // List motorbike for rent (with rental amount per day, minimum required renter-rating, and city)
+                        bool isExisted = false;
                         double credit, rating;
+                        int motorRegisterChoice;
                         std::string city;
-                        cout << "Enter your `credit` required for renting: ";
-                        cin >> credit;
-                        cout << "Enter `minimum rating required from user` for renting: ";
-                        cin >> rating;
-                        cout << "Enter `city` of the motorbike for renting: ";
-                        cin >> city;
-
+                        // List motorbike for rent (with rental amount per day, minimum required renter-rating, and city)
                         for (Motorbike &motorbike : motorbikes)
                         {
-                            if (motorbike.getOwnerUsername() == "linh")
+                            // Check if the user already registered a motorbike
+                            if (motorbike.getOwnerUsername() == loggedInUser.getUsername())
                             {
+                                isExisted = true;
+                                cout << "Enter your `credit` required for renting: ";
+                                cin >> credit;
+                                cout << "Enter `minimum rating required from user` for renting: ";
+                                cin >> rating;
+                                cout << "Enter `city` of the motorbike for renting: ";
+                                cin >> city;
                                 userSystem.listMotorbikeForRent(motorbike, credit, rating, city);
+                                break;
+                            }
+                        }
+                        if (isExisted == false)
+                        {
+                            cout << "You haven't registered a motorbike. Do you want to register now?\n1. Yes | 2. No\nEnter your choice: ";
+                            cin >> motorRegisterChoice;
+                            if (motorRegisterChoice == 1)
+                            {
+                                // Register the motorbike
+                                cout << "\n***Register Motorbike***\n";
+                                std::string model, color, engineSize, transmissionMode, description, listedForRentStr, startTimeStr, endTimeStr, city;
+                                int yearMade;
+                                double creditPerDay, minRenterRating;
+                                bool listedForRent;
+
+                                cout << "Model: ";
+                                cin >> model;
+                                cout << "Color: ";
+                                cin >> color;
+                                cout << "Engine Size: ";
+                                cin >> engineSize;
+                                cout << "Transmission Mode: ";
+                                cin >> transmissionMode;
+                                cout << "Year Made: ";
+                                cin >> yearMade;
+                                cin.ignore(); // Clear the newline character from the input buffer
+                                cout << "Description: ";
+                                std::getline(cin, description);
+                                cout << "Listed for Rent (true/false): ";
+                                cin >> listedForRentStr;
+                                listedForRent = (listedForRentStr == "true");
+                                std::time_t startTime, endTime;
+                                if (listedForRent)
+                                {
+                                    cout << "Credit Per Day: ";
+                                    cin >> creditPerDay;
+                                    cout << "Minimum Renter Rating: ";
+                                    cin >> minRenterRating;
+                                    cin.ignore(); // Clear the newline character from the input buffer
+                                    cout << "Start Time available for rent (YYYY-MM-DD HH:MM:SS): ";
+                                    std::getline(cin, startTimeStr);
+                                    startTime = stringToTimestamp(startTimeStr);
+                                    cout << "End Time (YYYY-MM-DD HH:MM:SS): ";
+                                    std::getline(cin, endTimeStr);
+                                    endTime = stringToTimestamp(endTimeStr);
+                                }
+                                cout << "City: ";
+                                cin >> city;
+
+                                Motorbike newMotorbike(loggedInUser.getUsername(), model, color, engineSize, transmissionMode, yearMade, description, listedForRent, 10, creditPerDay, minRenterRating, startTime, endTime, city);
+                                userSystem.registerNewMotorbike(newMotorbike);
+                                loggedInUser.addMotorbikeToUser(newMotorbike);
                             }
                         }
                     }
@@ -229,9 +310,9 @@ int main()
                         // Unlist motorbike (disable for renting), update in text file as well
                         for (Motorbike &motorbike : motorbikes)
                         {
-                            if (motorbike.getOwnerUsername() == "linh")
+                            if (motorbike.getOwnerUsername() == loggedInUser.getUsername())
                             {
-                                // userSystem.unlistMotorbikeForRent(motorbike);
+                                userSystem.unlistMotorbikeForRent(motorbike);
                             }
                         }
                     }
@@ -242,11 +323,11 @@ int main()
                         do
                         {
                             cout << "\nStart from: ";
-                            std::cin.ignore();
+                            cin.ignore();
                             std::getline(cin, startTime);
                             if (!isValidDateTime(startTime))
                             {
-                                std::cout << "Invalid format. Please re-enter 'Start time' in this format `YYYY-MM-DD HH:MM::SS`" << std::endl;
+                                cout << "Invalid format. Please re-enter 'Start time' in this format `YYYY-MM-DD HH:MM::SS`" << std::endl;
                             }
                         } while (!isValidDateTime(startTime));
 
@@ -256,7 +337,7 @@ int main()
                             std::getline(cin, endTime);
                             if (!isValidDateTime(endTime))
                             {
-                                std::cout << "Invalid format. Please re-enter 'End time' in this format `YYYY-MM-DD HH:MM::SS`" << std::endl;
+                                cout << "Invalid format. Please re-enter 'End time' in this format `YYYY-MM-DD HH:MM::SS`" << std::endl;
                             }
                         } while (!isValidDateTime(endTime));
 
@@ -268,53 +349,30 @@ int main()
                         cout << "\n***** Available motorbikes *****" << endl;
                         for (size_t i = 0; i < availableMotorbikes.size(); ++i)
                         {
-                            std::cout << "Option " << (i + 1) << ":" << std::endl;
-                            std::cout << availableMotorbikes[i] << std::endl;
+                            cout << "Option " << (i + 1) << ":" << std::endl;
+                            cout << availableMotorbikes[i] << std::endl;
                         }
+                        userSystem.requestMotorbikeRental(userSystem, loggedInUser, availableMotorbikes);
                     }
                     else if (command == 5)
                     {
                         // Top up Credit
-                        /*** THINH ****/
+                        double amount;
+                        cout << "Enter amount to top up: ";
+                        cin >> amount;
+
+                        if (userSystem.topUpUserCreditPoints(username, amount))
+                        {
+                            cout << "Credit points topped up successfully." << std::endl;
+                        }
+                        else
+                        {
+                            cout << "User not found. Top-up failed." << std::endl;
+                        }
                     }
                     else if (command == 6)
                     {
-                        // view all requests to the motorbike
-                        /******NHAM*****/
-                        // int choice = 0;
-
-                        // std::cout << "Enter the number of the motorbike you want to request (0 to cancel): ";
-                        // std::cin >> choice;
-
-                        // if (choice >= 1 && choice <= availableMotorbikes.size())
-                        // {
-                        //     Motorbike selectedMotorbike = availableMotorbikes[choice - 1];
-                        //     std::string ownerUsername = selectedMotorbike.getOwnerUsername();
-                        //     std::string username = loggedInUser.getUsername();
-                        //     // Prompt the user for additional information (credit, id, etc.)
-                        //     double credit;
-                        //     bool accepted = false;
-                        //     bool rejected = false;
-
-                        //     // Access startTime and endTime from selectedMotorbike
-                        //     std::time_t startTime = selectedMotorbike.getStartTime();
-                        //     std::time_t endTime = selectedMotorbike.getEndTime();
-
-                        //     // Request to rent the selected motorbike
-                        //     selectedMotorbike.requestToRentMotorbike(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints());
-
-                        //     RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, credit, accepted, rejected);
-
-                        //     userSystem.storeRentalRequest(request);
-                        // }
-                        // else if (choice != 0)
-                        // {
-                        //     std::cout << "Invalid choice. Please try again." << std::endl;
-                        // }
-
-                        // userSystem.loadAndDisplayRentalRequests();
-
-                        /*****************************/
+                        userSystem.loadAndDisplayRentalRequests();
                     }
                 }
             }
@@ -327,10 +385,10 @@ int main()
             std::string username, password;
 
             // Prompt the user for username and password
-            std::cout << "Enter the admin username:";
-            std::cin >> username;
-            std::cout << "Enter the admin password:";
-            std::cin >> password;
+            cout << "Enter the admin username:";
+            cin >> username;
+            cout << "Enter the admin password:";
+            cin >> password;
 
             // // Check if the entered credentials are valid
             if (userSystem.checkAdmin(username, password))
@@ -345,7 +403,7 @@ int main()
                     if (cin.fail())
                     {
                         cin.clear();
-                        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+                        cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
                         cout << "\nInvalid input. Please try again\n";
                     }
                     else if (command == 1)
@@ -358,7 +416,7 @@ int main()
                         cout << "***** All Motorbikes *****" << endl;
                         for (const Motorbike &motorbike : motorbikes)
                         {
-                            std::cout << motorbike << endl;
+                            cout << motorbike << endl;
                         }
                         if (command == 1)
                         {
@@ -368,10 +426,9 @@ int main()
                     else if (command == 3)
                     {
                         // Print All Users
-                        std::vector<User> &users = userSystem.getUsers();
                         for (const User &user : users)
                         {
-                            std::cout << user << endl;
+                            cout << user << endl;
                         }
                         if (command == 1)
                         {
@@ -382,7 +439,7 @@ int main()
             }
             else
             {
-                std::cout << "\nLogin failed. Invalid username or password.\n";
+                cout << "\nLogin failed. Invalid username or password.\n";
             }
         }
     }

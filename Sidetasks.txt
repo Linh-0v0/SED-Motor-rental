@@ -1,6 +1,0 @@
-1. Input validation
-2. User-generate IDx
-3. password Hash - password Unhash
-5. update current data to text file
-6. Username existed check
-7. registerUser(): Thinh
