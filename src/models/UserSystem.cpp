@@ -215,7 +215,8 @@ void UserSystem::listMotorbikeForRent(Motorbike &motorbike, double creditPointsC
     motorbike.setListedForRent(true);
     // Update list status in text file
     updateMotorbikeInFile(motorbike);
-    cout << "Motorbike has been listed for renting.\n" << endl;
+    cout << "Motorbike has been listed for renting.\n"
+         << endl;
 }
 
 // Disable the motorbike from renting
@@ -225,7 +226,8 @@ void UserSystem::unlistMotorbikeForRent(Motorbike &motorbike)
     motorbike.setListedForRent(false);
     // Update list status in text file
     updateMotorbikeInFile(motorbike);
-    cout << "Motorbike has been unlisted from renting.\n" << endl;
+    cout << "Motorbike has been unlisted from renting.\n"
+         << endl;
 }
 
 // Function to search for available motorbikes in a specified period
@@ -234,7 +236,7 @@ std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
     std::string userStartTime,
     std::string userEndTime,
     std::string city,
-    User& user)
+    User &user)
 {
     std::vector<Motorbike> availableMotorbikes;
     std::time_t startTime = stringToTimestamp(userStartTime);
@@ -245,12 +247,11 @@ std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
         std::time_t motorbikeStartTime = motorbike.getStartTime();
         std::time_t motorbikeEndTime = motorbike.getEndTime();
 
-        if (endTime <= motorbikeEndTime && 
-        startTime >= motorbikeStartTime && 
-        motorbike.getListedForRent() == true && 
-        motorbike.getCity() == city &&
-        user.getCreditPoints() >= motorbike.getCreditPerDay() &&
-        user.getRenterRatingScore() >= motorbike.getMinRenterRating())
+        if ((motorbikeEndTime >= endTime && motorbikeStartTime <= startTime) &&
+            motorbike.getListedForRent() == true &&
+            motorbike.getCity() == city &&
+            user.getCreditPoints() >= motorbike.getCreditPerDay() &&
+            user.getRenterRatingScore() >= motorbike.getMinRenterRating())
         {
             // Motorbike is available for the user's desired period
             availableMotorbikes.push_back(motorbike);
@@ -260,38 +261,41 @@ std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
     return availableMotorbikes;
 }
 
-
-User* UserSystem::findUserByUsername(const std::string& username) {
-    for (User& user : users) {
-        if (user.getUsername() == username) {
+User *UserSystem::findUserByUsername(const std::string &username)
+{
+    for (User &user : users)
+    {
+        if (user.getUsername() == username)
+        {
             return &user; // Return a pointer to the user if found
         }
     }
     return nullptr; // Return nullptr if the user is not found
 }
 
-
-void UserSystem::saveRentalRequestsToFile(const std::string& filename) {
+void UserSystem::saveRentalRequestsToFile(const std::string &filename)
+{
     // Open the file for writing (in append mode)
     std::ofstream file(filename, std::ios::app);
 
     // Check if the file is open
-    if (!file.is_open()) {
+    if (!file.is_open())
+    {
         std::cerr << "Error opening file for writing: " << filename << std::endl;
         return;
     }
 
     // Iterate through the rentalRequests vector and save each request to the file
-    for (const RentalRequest& request : rentalRequests) {
+    for (const RentalRequest &request : rentalRequests)
+    {
         // Format the data and write it to the file
         file << request.getRequestingUser() << ","
              << request.getMotorbikeOwner() << ","
              << request.getStartTime() << "," // Save startTime
              << request.getEndTime() << ","   // Save endTime
-             << request.getCredit() << ","   // Save credit
+             << request.getCredit() << ","    // Save credit
              << (request.isAccepted() ? "1" : "0") << ","
-             << (request.isRejected() ? "1" : "0") <<
-               "\n"; 
+             << (request.isRejected() ? "1" : "0") << "\n";
     }
 
     // Flush the file to ensure immediate writing
@@ -301,15 +305,18 @@ void UserSystem::saveRentalRequestsToFile(const std::string& filename) {
     file.close();
 }
 
-void UserSystem::updateRentalRequestsToFile(const std::string& filename, const std::vector<RentalRequest>& updatedRequests) {
+void UserSystem::updateRentalRequestsToFile(const std::string &filename, const std::vector<RentalRequest> &updatedRequests)
+{
     std::ofstream outFile(filename);
 
-    if (!outFile.is_open()) {
+    if (!outFile.is_open())
+    {
         std::cerr << "Cannot open file for writing: " << filename << std::endl;
         return;
     }
 
-    for (const RentalRequest& request : updatedRequests) {
+    for (const RentalRequest &request : updatedRequests)
+    {
         outFile << request.getRequestingUser() << ","
                 << request.getMotorbikeOwner() << ","
                 << request.getStartTime() << ","
@@ -322,8 +329,8 @@ void UserSystem::updateRentalRequestsToFile(const std::string& filename, const s
     outFile.close();
 }
 
-
-void UserSystem::storeRentalRequest(const RentalRequest& request) {
+void UserSystem::storeRentalRequest(const RentalRequest &request)
+{
     // Update the rental request with start and end times
     RentalRequest updatedRequest = request;
 
@@ -334,14 +341,15 @@ void UserSystem::storeRentalRequest(const RentalRequest& request) {
     saveRentalRequestsToFile("rental_requests.txt");
 }
 
-
-void UserSystem::requestMotorbikeRental(UserSystem& userSystem, const User& loggedInUser, const std::vector<Motorbike>& availableMotorbikes) {
+void UserSystem::requestMotorbikeRental(UserSystem &userSystem, const User &loggedInUser, const std::vector<Motorbike> &availableMotorbikes)
+{
     int choice = 0;
 
     std::cout << "Enter the number of the motorbike you want to request (0 to cancel): ";
     std::cin >> choice;
 
-    if (choice >= 1 && choice <= availableMotorbikes.size()) {
+    if (choice >= 1 && choice <= availableMotorbikes.size())
+    {
         Motorbike selectedMotorbike = availableMotorbikes[choice - 1];
         std::string ownerUsername = selectedMotorbike.getOwnerUsername();
 
@@ -358,25 +366,30 @@ void UserSystem::requestMotorbikeRental(UserSystem& userSystem, const User& logg
         RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints(), accepted, rejected);
 
         userSystem.storeRentalRequest(request);
-    } else if (choice != 0) {
+    }
+    else if (choice != 0)
+    {
         std::cout << "Invalid choice. Please try again." << std::endl;
     }
 }
 
-void UserSystem::loadAndDisplayRentalRequests() {
+void UserSystem::loadAndDisplayRentalRequests()
+{
     // Load rental requests from the file
     std::ifstream inFile("rental_requests.txt");
-    if (!inFile.is_open()) {
+    if (!inFile.is_open())
+    {
         std::cerr << "Cannot open rental requests file!" << std::endl;
         return;
     }
 
     std::string line;
-    int lineNumber = 0; // Keep track of the line number being processed
+    int lineNumber = 0;            // Keep track of the line number being processed
     bool ownerHasRequests = false; // Flag to check if the owner has any requests
     int requestNumber = 0;
 
-    while (std::getline(inFile, line)) {
+    while (std::getline(inFile, line))
+    {
         lineNumber++; // Increment line number
         std::stringstream ss(line);
         std::ostringstream ossCredit;
@@ -393,9 +406,11 @@ void UserSystem::loadAndDisplayRentalRequests() {
             ss >> endTime && ss.ignore() &&
             ss >> credit && ss.ignore() &&
             ss >> accepted && ss.ignore() &&
-            ss >> rejected) {
+            ss >> rejected)
+        {
             // Check if the motorbike owner matches the logged-in user's username
-            if (motorbikeOwner == loggedInUser.getUsername()) {
+            if (motorbikeOwner == loggedInUser.getUsername())
+            {
                 ownerHasRequests = true; // Owner has requests
                 requestNumber++;
 
@@ -415,55 +430,72 @@ void UserSystem::loadAndDisplayRentalRequests() {
                 ossCredit << request.getCredit();
                 std::cout << "Credit: " << ossCredit.str() << std::endl;
                 std::cout << "Accepted: " << request.isAccepted() << ", Rejected: " << request.isRejected() << std::endl;
-                if (request.isAccepted()) {
+                if (request.isAccepted())
+                {
                     std::cout << "Status: Accepted" << std::endl;
-                } else if (request.isRejected()) {
+                }
+                else if (request.isRejected())
+                {
                     std::cout << "Status: Rejected" << std::endl;
-                } else {
+                }
+                else
+                {
                     std::cout << "Status: Pending" << std::endl;
                 }
                 std::cout << "-----------------------------" << std::endl;
             }
-        } else {
+        }
+        else
+        {
             std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
         }
     }
 
     inFile.close();
-    if (!ownerHasRequests) {
+    if (!ownerHasRequests)
+    {
         std::cout << "You don't have any pending requests." << std::endl;
         return;
     }
 
     int choice = 0;
-    do {
+    do
+    {
         std::cout << "Enter the number of the request to accept (0 to exit): ";
         std::cin >> choice;
 
-        if (choice >= 1 && choice <= rentalRequests.size()) {
-            RentalRequest& request = rentalRequests[choice - 1];
-            if (!request.isAccepted() && !request.isRejected()) {
+        if (choice >= 1 && choice <= rentalRequests.size())
+        {
+            RentalRequest &request = rentalRequests[choice - 1];
+            if (!request.isAccepted() && !request.isRejected())
+            {
                 // Process the selected request
                 request.setAccepted(true); // Accept the selected request
                 std::cout << "Request accepted." << std::endl;
 
                 // Update the status of other requests with the same renting time
-                for (RentalRequest& otherRequest : rentalRequests) {
+                for (RentalRequest &otherRequest : rentalRequests)
+                {
                     if (&otherRequest != &request && !otherRequest.isAccepted() && !otherRequest.isRejected() &&
                         otherRequest.getStartTime() <= request.getEndTime() &&
-                        otherRequest.getEndTime() >= request.getStartTime()) {
+                        otherRequest.getEndTime() >= request.getStartTime())
+                    {
                         otherRequest.setRejected(true); // Mark as "Rejected"
                     }
                 }
 
                 // Save the updated requests to the file
                 updateRentalRequestsToFile("rental_requests.txt", rentalRequests);
-            } else {
+            }
+            else
+            {
                 std::cout << "Request has already been accepted or rejected." << std::endl;
             }
-        } else if (choice != 0) {
+        }
+        else if (choice != 0)
+        {
             std::cout << "Invalid choice. Please try again." << std::endl;
-            std::cin.clear(); // Clear any error flags
+            std::cin.clear();                                                   // Clear any error flags
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
         }
     } while (choice != 0);
