@@ -895,12 +895,12 @@ bool UserSystem::mapOwnerRatingToUser()
         }
         else
         {
+            return false;
             std::cerr << "Error parsing line: " << line << std::endl;
         }
     }
-
-    // Close the input file
     inFile.close();
+    return true;
 }
 
 bool UserSystem::mapRenterRatingToMotorbike()
@@ -951,12 +951,12 @@ bool UserSystem::mapRenterRatingToMotorbike()
         }
         else
         {
+            return false;
             std::cerr << "Error parsing line: " << line << std::endl;
         }
     }
-
-    // Close the input file
     inFile.close();
+    return true;
 }
 
 void UserSystem::addUserCommentToFile(const UserComment &comment, std::string filename)

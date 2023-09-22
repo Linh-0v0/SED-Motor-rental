@@ -1,7 +1,7 @@
 # Makefile
 # Specify the compiler and compilation flags
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall
+CXXFLAGS = -std=c++11
 
 # Define the target executable name
 TARGET = bin/linh_program
