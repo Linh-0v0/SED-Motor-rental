@@ -23,7 +23,6 @@ private:
     int yearMade;
     std::string description;
     bool listedForRent;
-    std::vector<std::string> comments;
     std::vector<double> motorbikeRatings;
     double motorbikeRating; //average of `motorbikeRatings`
 
@@ -42,6 +41,7 @@ public:
     /*Getter*/
     std::string getOwnerUsername() const;
     bool getListedForRent();
+    double getMotorbikeRating();
     double getCreditPerDay() const;
     int getMinRenterRating() const;
     std::time_t getStartTime() const;
@@ -61,7 +61,6 @@ public:
     friend std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike);
 
     /*Others*/
-    void addToComments(const std::string &comment);
     void addToMotorbikeRatings(double rating);
     double calcAverageMotorbikeRating() const; // return the average valuef for MotorbikeRating
     // Method to convert Motorbike data to a formatted string for writing to the file
@@ -69,8 +68,6 @@ public:
 
     //function to request to rent the motorbike
     void requestToRentMotorbike(const std::string& requestingUser, const std::string& motorbikeOwner,  std::time_t startTime,std::time_t endTime, double credit);
-
-
 };
 
 #endif

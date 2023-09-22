@@ -22,7 +22,6 @@ private:
     std::string idNumber;
     std::string driverLicense;
     std::string expiryDate;
-    std::vector<std::string> comments;
     double creditPoints;
     std::vector<double> renterRatingScores;
     double renterRatingScore; // average of `renterRatingScores`
@@ -67,7 +66,6 @@ public:
 
     /*Others*/
     void printAvailableMotorbikes() const;
-    void addToComments(const std::string& comment);
     void addToRenterRatings(double rating);
     void addMotorbikeToUser(const Motorbike &motorbike);
     void topUpCreditPoints(double amount);

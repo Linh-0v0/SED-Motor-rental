@@ -51,6 +51,17 @@ int main()
         }
     }
 
+    // Load rating (score, comments, time) from txt file
+    if (userSystem.mapOwnerRatingToUser() && userSystem.mapRenterRatingToMotorbike())
+    {
+        cout << "Ratings loaded successfully." << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error loading user data." << std::endl;
+        return 1; // Exit with an error code
+    }
+
     /***** INTERFACE *****/
     cout << "\nEEET2482/COSC2082 ASSIGNMENT";
     cout << "\nMOTORBIKE RENTAL APPLICATION";
@@ -299,7 +310,7 @@ int main()
                                 cout << "City: ";
                                 cin >> city;
 
-                                Motorbike newMotorbike(loggedInUser.getUsername(), model, color, engineSize, transmissionMode, yearMade, description, listedForRent, 10, creditPerDay, minRenterRating, startTime, endTime, city);
+                                Motorbike newMotorbike(loggedInUser.getUsername(), model, color, engineSize, transmissionMode, yearMade, description, listedForRent, 0, creditPerDay, minRenterRating, startTime, endTime, city);
                                 userSystem.registerNewMotorbike(newMotorbike);
                                 loggedInUser.addMotorbikeToUser(newMotorbike);
                             }
@@ -352,7 +363,29 @@ int main()
                             cout << "Option " << (i + 1) << ":" << std::endl;
                             cout << availableMotorbikes[i] << std::endl;
                         }
-                        userSystem.requestMotorbikeRental(userSystem, loggedInUser, availableMotorbikes);
+                        if (availableMotorbikes.empty())
+                        {
+                            cout << "No motorbikes available.\n";
+                        }
+                        else
+                        {
+                            int reviewChoice;
+                            cout << "Do you want to view the reviews of a motorbike?\n1.Yes | 2.No\nEnter your choice: ";
+                            do
+                            {
+                                cin >> reviewChoice;
+                                if (reviewChoice != 1 && reviewChoice != 2)
+                                {
+                                    cout << "Invalid input. Please input again\n";
+                                }
+                            } while (reviewChoice != 1 && reviewChoice != 2);
+                            if (reviewChoice == 1)
+                            {
+                                userSystem.loadReviewsForDisplay(availableMotorbikes);
+                            }
+
+                            userSystem.requestMotorbikeRental(userSystem, loggedInUser, availableMotorbikes);
+                        }
                     }
                     else if (command == 5)
                     {
@@ -398,7 +431,7 @@ int main()
                 cout << "Admin\n";
                 while (1)
                 {
-                    cout << "As an admin, you can:\n1. Exit Program.\n2. View all motorbike details\n3. View all users detail.\n";
+                    cout << "As an admin, you can:\n1. Exit Program.\n2. View all motorbike details\n3. View all users detail.\nEnter your choice: ";
                     cin >> command;
                     if (cin.fail())
                     {

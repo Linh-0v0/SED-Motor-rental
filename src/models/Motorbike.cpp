@@ -25,6 +25,10 @@ bool Motorbike::getListedForRent()
     return listedForRent;
 }
 
+double Motorbike::getMotorbikeRating() {
+    return motorbikeRating;
+}
+
 double Motorbike::getCreditPerDay() const
 {
     return creditPerDay;
@@ -112,11 +116,6 @@ std::ostream &operator<<(std::ostream &os, const Motorbike &motorbike)
 }
 
 /***** Others *****/
-void Motorbike::addToComments(const std::string &comment)
-{
-    comments.push_back(comment);
-}
-
 void Motorbike::addToMotorbikeRatings(double rating) {
     motorbikeRatings.push_back(rating);
 }

@@ -145,11 +145,6 @@ void User::printAvailableMotorbikes() const
     }
 }
 
-void User::addToComments(const std::string &comment)
-{
-    comments.push_back(comment);
-}
-
 void User::addToRenterRatings(double rating)
 {
     renterRatingScores.push_back(rating);

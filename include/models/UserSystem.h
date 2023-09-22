@@ -8,12 +8,15 @@
 #include "Admin.h"
 #include "User.h"
 #include "Motorbike.h"
+#include "UserComment.h"
 
 class UserSystem
 {
 private:
     std::vector<User> users;
     std::vector<Motorbike> motorbikes;
+    std::vector<UserComment> ownerRenterRatings; //owner rates renter
+    std::vector<UserComment> renterMotorbikeRatings; //renter rates motorbikes
 
     Admin loggedInAdmin;
     User loggedInUser;
@@ -26,6 +29,9 @@ public:
     /*Getter*/
     std::vector<User> &getUsers();
     std::vector<Motorbike> &getMotorbikes();
+    std::vector<UserComment> &getOwnerRenterRatings();
+    std::vector<UserComment> &getRenterMotorbikeRatings();
+
     std::map<std::string, User> &getUserMap();
     const Admin &getAdmin();
     const User &getLoggedInUser();
@@ -78,12 +84,18 @@ public:
     void updateRentalRequestsToFile(const std::string& filename, const std::vector<RentalRequest>& updatedRequests); 
     void saveRentalRequestsToFile(const std::string& filename);
     void loadAndDisplayRentalRequests();
+    void loadReviewsForDisplay(const std::vector<Motorbike> &availableMotorbikes);
     void acceptOrRejectRequest();
 
     // Add new rating score and Update to the avarage value of all renter-rating scores
     void addRenterRatingScore(User& user, double value);
     // Add new rating score and Update to the avarage value of all motorbike-rating scores
     void addMotorbikeRatingScore(Motorbike& motorbike, double value);
+    bool mapOwnerRatingToUser();
+    bool mapRenterRatingToMotorbike();
+    void addUserCommentToFile(const UserComment& comment, std::string filename);
+    void updateOwnerRenterRatingFile(const UserComment& updatedData);
+    void updateRenterMotorbikeRatingFile(const UserComment& updatedData);
 };
 
 #endif
