@@ -58,7 +58,7 @@ public:
     void setIdNumber(const std::string &newIdNumber);
     void setDriverLicense(const std::string &newDriverLicense);
     void setExpiryDate(const std::string &newExpiryDate);
-    void setConsumingCreditPoints(double newCreditPoints);
+    void setCreditPoints(double newCreditPoints);
     void setRenterRatingScore(double newRenterRatingScore);
 
     /*Operator*/

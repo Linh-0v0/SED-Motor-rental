@@ -7,13 +7,12 @@
 
 class RentalRequest {
 public:
-    RentalRequest(const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, double credit, bool accepted, bool rejected);
+    RentalRequest(const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, bool accepted, bool rejected);
     //Getter
     const std::string& getRequestingUser() const;
     const std::string& getMotorbikeOwner() const;
     std::time_t getStartTime() const;
     std::time_t getEndTime() const;
-    double getCredit() const;
     bool isAccepted() const; 
     bool isRejected() const;
     void setAccepted(bool value);
@@ -25,7 +24,6 @@ private:
     std::string motorbikeOwner;
     std::time_t startTime;
     std::time_t endTime;
-    double credit;
     bool accepted;
     bool rejected;
 };

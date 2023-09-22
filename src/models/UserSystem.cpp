@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <cmath>
 #include <unordered_map>
 #include <fstream>
 #include "../../include/models/UserSystem.h"
@@ -449,7 +450,6 @@ void UserSystem::saveRentalRequestsToFile(const std::string &filename)
              << request.getMotorbikeOwner() << ","
              << request.getStartTime() << "," // Save startTime
              << request.getEndTime() << ","   // Save endTime
-             << request.getCredit() << ","    // Save credit
              << (request.isAccepted() ? "1" : "0") << ","
              << (request.isRejected() ? "1" : "0") << "\n";
     }
@@ -519,7 +519,6 @@ void UserSystem::updateRentalRequestsToFile(const std::string &filename, const s
                                     << updatedRequest.getMotorbikeOwner() << ","
                                     << updatedRequest.getStartTime() << ","
                                     << updatedRequest.getEndTime() << ","
-                                    << updatedRequest.getCredit() << ","
                                     << updatedRequest.isAccepted() << ","
                                     << updatedRequest.isRejected() << std::endl;
                             updated = true;
@@ -531,7 +530,6 @@ void UserSystem::updateRentalRequestsToFile(const std::string &filename, const s
                                     << updatedRequest.getMotorbikeOwner() << ","
                                     << updatedRequest.getStartTime() << ","
                                     << updatedRequest.getEndTime() << ","
-                                    << updatedRequest.getCredit() << ","
                                     << false << ","
                                     << true << std::endl;
                             updated = true;
@@ -598,7 +596,7 @@ void UserSystem::requestMotorbikeRental(UserSystem &userSystem, const User &logg
         bool accepted = false;
         bool rejected = false;
 
-        RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, loggedInUser.getCreditPoints(), accepted, rejected);
+        RentalRequest request(loggedInUser.getUsername(), ownerUsername, startTime, endTime, accepted, rejected);
 
         userSystem.storeRentalRequest(request);
     }
@@ -650,7 +648,7 @@ void UserSystem::loadAndDisplayRentalRequests()
                 requestNumber++;
 
                 // Create a RentalRequest object
-                RentalRequest request(requestingUser, motorbikeOwner, startTime, endTime, credit, accepted, rejected);
+                RentalRequest request(requestingUser, motorbikeOwner, startTime, endTime, accepted, rejected);
 
                 // Add the request to the rentalRequests vector
                 rentalRequests.push_back(request);
@@ -662,7 +660,6 @@ void UserSystem::loadAndDisplayRentalRequests()
                 std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
                 std::cout << "Start Time: " << timestampToString(request.getStartTime()) << std::endl;
                 std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
-                ossCredit << request.getCredit();
                 std::cout << "Credit: " << ossCredit.str() << std::endl;
                 if (request.isAccepted())
                 {
@@ -706,6 +703,16 @@ void UserSystem::loadAndDisplayRentalRequests()
                 // Process the selected request
                 request.setAccepted(true); // Accept the selected request
                 std::cout << "Request accepted." << std::endl;
+                for (Motorbike &motorbike : motorbikes)
+                {
+                    if (motorbike.getOwnerUsername() == request.getMotorbikeOwner())
+                    {
+                        Motorbike &onwerMotorbike = motorbike;
+                        // Deduct credit from the renter after request is accepted
+                        deductCreditBasedOnRentingDays(request.getRequestingUser(), onwerMotorbike);
+                        break;
+                    }
+                }
 
                 // Update the status of other requests with the same renting time
                 for (RentalRequest &otherRequest : rentalRequests)
@@ -972,12 +979,13 @@ void UserSystem::updateRenterMotorbikeRatingFile(const UserComment &updatedData)
     }
 }
 
-void UserSystem::renterRating()
+// check if the user's motorbike rent is in the past
+void UserSystem::RenterRating()
 {
     // Load rental requests from the file
-    time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
+    time_t now = time(0);
+    struct tm tstruct;
+    char buf[80];
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
@@ -991,8 +999,8 @@ void UserSystem::renterRating()
     int lineNumber = 0;            // Keep track of the line number being processed
     bool ownerHasRequests = false; // Flag to check if the owner has any requests
     int requestNumber = 0;
-    std::time_t time_now = std::time(0); 
-    bool x=false;
+    std::time_t time_now = std::time(0);
+    bool x = false;
 
     while (std::getline(inFile, line))
     {
@@ -1019,19 +1027,20 @@ void UserSystem::renterRating()
             {
                 int rating;
 
-                if (accepted==true && endTime<now){
+                if (accepted == true && endTime < now)
+                {
                     x = true;
-                    cout << requestingUser<< " has finished renting your bike.\nRating available now.\n";
-                    cin>>rating;
+                    cout << requestingUser << " has finished renting your bike.\nRating available now.\n";
+                    cin >> rating;
 
                     // push rating to array to save
                 }
+            }
+            else
+            {
+                std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
+            }
         }
-        else
-        {
-            std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
-        }
-    }
     }
 
     inFile.close();
@@ -1040,4 +1049,32 @@ void UserSystem::renterRating()
         std::cout << "You don't have any pending requests." << std::endl;
     }
     return;
+}
+
+void UserSystem::deductCreditBasedOnRentingDays(std::string renter, Motorbike &motorbike)
+{
+    double usercredit;
+    // Convert start time and end time to time_t
+    std::time_t startTimeT = motorbike.getStartTime();
+    std::time_t endTimeT = motorbike.getEndTime();
+    // Calculate the duration in seconds
+    double durationInSeconds = std::difftime(endTimeT, startTimeT);
+    // Calculate the number of days and fractional days
+    double days = durationInSeconds / (60 * 60 * 24); // 1 day = 24 hours * 60 minutes * 60 seconds
+    // Round up the fractional days to the nearest whole day
+    int roundedDays = static_cast<int>(std::ceil(days));
+    // Calculate the total price
+    double totalPrice = roundedDays * motorbike.getCreditPerDay();
+
+    for (User &user : users)
+    {
+        if (user.getUsername() == renter)
+        {
+            usercredit = user.getCreditPoints();
+            usercredit -= totalPrice;
+            user.setCreditPoints(usercredit);
+            // update credit point in user txt file
+            updateUserInFile(user);
+        }
+    }
 }

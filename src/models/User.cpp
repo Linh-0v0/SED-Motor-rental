@@ -108,7 +108,7 @@ void User::setExpiryDate(const std::string &newExpiryDate)
     expiryDate = newExpiryDate;
 }
 
-void User::setConsumingCreditPoints(double newCreditPoints)
+void User::setCreditPoints(double newCreditPoints)
 {
     creditPoints = newCreditPoints;
 }

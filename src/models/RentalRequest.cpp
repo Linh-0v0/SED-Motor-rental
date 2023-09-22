@@ -9,8 +9,8 @@ using namespace std;
 
 
 // Implement the RentalRequest constructor
-RentalRequest::RentalRequest( const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, double credit, bool accepted, bool rejected)
-    : requestingUser(requestingUser), motorbikeOwner(motorbikeOwner), startTime(startTime), endTime(endTime), credit(credit), accepted(accepted), rejected(rejected) { 
+RentalRequest::RentalRequest( const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, bool accepted, bool rejected)
+    : requestingUser(requestingUser), motorbikeOwner(motorbikeOwner), startTime(startTime), endTime(endTime), accepted(accepted), rejected(rejected) { 
     this->requestingUser = requestingUser;
     this->motorbikeOwner = motorbikeOwner;
 
@@ -35,10 +35,6 @@ std::time_t RentalRequest::getStartTime() const {
 
 std::time_t RentalRequest::getEndTime() const {
     return endTime;
-}
-
-double RentalRequest::getCredit() const {
-    return credit;
 }
 
 bool RentalRequest::isAccepted() const {
