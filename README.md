@@ -35,13 +35,13 @@ make run
 ```
 
 ## Admin account for testing
-username: linhsieuquay
-password: dobiet
+- username: linhsieuquay
+- password: dobiet
 
 ## Limitation
 The 13th feature is not completely implement (which is motorbike owner rating renter).
 
 ## Contributors
-Nguyen Hoang To Nhu
-Vu Bui Khanh Linh
-Nguyen Truong Thinh
+- Nguyen Hoang To Nhu
+- Vu Bui Khanh Linh
+- Nguyen Truong Thinh
