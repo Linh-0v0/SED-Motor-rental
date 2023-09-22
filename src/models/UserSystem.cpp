@@ -462,27 +462,107 @@ void UserSystem::saveRentalRequestsToFile(const std::string &filename)
 
 void UserSystem::updateRentalRequestsToFile(const std::string &filename, const std::vector<RentalRequest> &updatedRequests)
 {
-    std::ofstream outFile(filename);
-
-    if (!outFile.is_open())
+    std::ifstream inFile("rental_requests.txt");
+    if (!inFile.is_open())
     {
-        std::cerr << "Cannot open file for writing: " << filename << std::endl;
+        std::cerr << "Cannot open rental requests file for reading!" << std::endl;
         return;
     }
 
-    for (const RentalRequest &request : updatedRequests)
+    std::ofstream outFile("temp_file.txt");
+    if (!outFile.is_open())
     {
-        outFile << request.getRequestingUser() << ","
-                << request.getMotorbikeOwner() << ","
-                << request.getStartTime() << ","
-                << request.getEndTime() << ","
-                << request.getCredit() << ","
-                << request.isAccepted() << ","
-                << request.isRejected() << std::endl;
+        std::cerr << "Cannot open temporary file for writing!" << std::endl;
+        inFile.close();
+        return;
     }
 
+    std::string line;
+    std::unordered_map<std::string, int> requestCounts;  // To keep track of the number of requests per owner and time
+
+    while (std::getline(inFile, line))
+    {
+        std::string requestingUser, motorbikeOwner;
+        time_t startTime, endTime;
+        double credit;
+        bool accepted, rejected;
+
+        std::stringstream ss(line);
+        if (std::getline(ss, requestingUser, ',') &&
+            std::getline(ss, motorbikeOwner, ',') &&
+            ss >> startTime && ss.ignore() &&
+            ss >> endTime && ss.ignore() &&
+            ss >> credit && ss.ignore() &&
+            ss >> accepted && ss.ignore() &&
+            ss >> rejected)
+        {
+            bool updated = false;
+
+            for (const RentalRequest &updatedRequest : updatedRequests)
+            {
+                if (motorbikeOwner == loggedInUser.getUsername() && motorbikeOwner == updatedRequest.getMotorbikeOwner() &&
+                    startTime == updatedRequest.getStartTime() && endTime == updatedRequest.getEndTime())
+                {
+                    if (updatedRequest.isAccepted() && !updatedRequest.isRejected())
+                    {
+                        if (requestCounts.find(motorbikeOwner) == requestCounts.end())
+                        {
+                            requestCounts[motorbikeOwner] = 0;
+                        }
+                        requestCounts[motorbikeOwner]++;
+
+                        if (requestCounts[motorbikeOwner] <= 1)
+                        {
+                            // Accept the first request, deny the others
+                            outFile << updatedRequest.getRequestingUser() << ","
+                                    << updatedRequest.getMotorbikeOwner() << ","
+                                    << updatedRequest.getStartTime() << ","
+                                    << updatedRequest.getEndTime() << ","
+                                    << updatedRequest.getCredit() << ","
+                                    << updatedRequest.isAccepted() << ","
+                                    << updatedRequest.isRejected() << std::endl;
+                            updated = true;
+                        }
+                        else
+                        {
+                            // Deny the additional requests
+                            outFile << updatedRequest.getRequestingUser() << ","
+                                    << updatedRequest.getMotorbikeOwner() << ","
+                                    << updatedRequest.getStartTime() << ","
+                                    << updatedRequest.getEndTime() << ","
+                                    << updatedRequest.getCredit() << ","
+                                    << false << ","
+                                    << true << std::endl;
+                            updated = true;
+                        }
+                    }
+                }
+            }
+
+            // If the request was not updated, write it as it is
+            if (!updated)
+            {
+                outFile << requestingUser << ","
+                        << motorbikeOwner << ","
+                        << startTime << ","
+                        << endTime << ","
+                        << credit << ","
+                        << accepted << ","
+                        << rejected << std::endl;
+            }
+        }
+    }
+
+    inFile.close();
     outFile.close();
+
+    // Rename the temporary file to the original file
+    if (std::rename("temp_file.txt", "rental_requests.txt") != 0)
+    {
+        std::cerr << "Error renaming temporary file!" << std::endl;
+    }
 }
+
 
 void UserSystem::storeRentalRequest(const RentalRequest &request)
 {
@@ -576,7 +656,7 @@ void UserSystem::loadAndDisplayRentalRequests()
                 rentalRequests.push_back(request);
 
                 // Display the rental request information
-                std::cout << "ALL RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
+                std::cout << "RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
                 std::cout << "-----------------------------" << std::endl;
                 std::cout << "Request " << requestNumber << " from: " << request.getRequestingUser() << std::endl;
                 std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
@@ -584,7 +664,6 @@ void UserSystem::loadAndDisplayRentalRequests()
                 std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
                 ossCredit << request.getCredit();
                 std::cout << "Credit: " << ossCredit.str() << std::endl;
-                std::cout << "Accepted: " << request.isAccepted() << ", Rejected: " << request.isRejected() << std::endl;
                 if (request.isAccepted())
                 {
                     std::cout << "Status: Accepted" << std::endl;
