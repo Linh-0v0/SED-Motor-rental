@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <unordered_map>
 #include <fstream>
 #include "../../include/models/UserSystem.h"
 #include "../../include/models/RentalRequest.h"
@@ -25,6 +26,16 @@ std::vector<User> &UserSystem::getUsers()
 std::vector<Motorbike> &UserSystem::getMotorbikes()
 {
     return motorbikes;
+}
+
+std::vector<UserComment> &UserSystem::getOwnerRenterRatings()
+{
+    return ownerRenterRatings;
+}
+
+std::vector<UserComment> &UserSystem::getRenterMotorbikeRatings()
+{
+    return renterMotorbikeRatings;
 }
 
 const Admin &UserSystem::getAdmin()
@@ -392,7 +403,7 @@ std::vector<Motorbike> UserSystem::searchAvailableMotorbikes(
         std::time_t motorbikeStartTime = motorbike.getStartTime();
         std::time_t motorbikeEndTime = motorbike.getEndTime();
 
-        if ((motorbikeEndTime >= endTime && motorbikeStartTime <= startTime) &&
+        if ((motorbikeEndTime <= endTime && motorbikeStartTime >= startTime) &&
             motorbike.getListedForRent() == true &&
             motorbike.getCity() == city &&
             user.getCreditPoints() >= motorbike.getCreditPerDay() &&
@@ -452,26 +463,105 @@ void UserSystem::saveRentalRequestsToFile(const std::string &filename)
 
 void UserSystem::updateRentalRequestsToFile(const std::string &filename, const std::vector<RentalRequest> &updatedRequests)
 {
-    std::ofstream outFile(filename);
-
-    if (!outFile.is_open())
+    std::ifstream inFile("rental_requests.txt");
+    if (!inFile.is_open())
     {
-        std::cerr << "Cannot open file for writing: " << filename << std::endl;
+        std::cerr << "Cannot open rental requests file for reading!" << std::endl;
         return;
     }
 
-    for (const RentalRequest &request : updatedRequests)
+    std::ofstream outFile("temp_file.txt");
+    if (!outFile.is_open())
     {
-        outFile << request.getRequestingUser() << ","
-                << request.getMotorbikeOwner() << ","
-                << request.getStartTime() << ","
-                << request.getEndTime() << ","
-                << request.getCredit() << ","
-                << request.isAccepted() << ","
-                << request.isRejected() << std::endl;
+        std::cerr << "Cannot open temporary file for writing!" << std::endl;
+        inFile.close();
+        return;
     }
 
+    std::string line;
+    std::unordered_map<std::string, int> requestCounts; // To keep track of the number of requests per owner and time
+
+    while (std::getline(inFile, line))
+    {
+        std::string requestingUser, motorbikeOwner;
+        time_t startTime, endTime;
+        double credit;
+        bool accepted, rejected;
+
+        std::stringstream ss(line);
+        if (std::getline(ss, requestingUser, ',') &&
+            std::getline(ss, motorbikeOwner, ',') &&
+            ss >> startTime && ss.ignore() &&
+            ss >> endTime && ss.ignore() &&
+            ss >> credit && ss.ignore() &&
+            ss >> accepted && ss.ignore() &&
+            ss >> rejected)
+        {
+            bool updated = false;
+
+            for (const RentalRequest &updatedRequest : updatedRequests)
+            {
+                if (motorbikeOwner == loggedInUser.getUsername() && motorbikeOwner == updatedRequest.getMotorbikeOwner() &&
+                    startTime == updatedRequest.getStartTime() && endTime == updatedRequest.getEndTime())
+                {
+                    if (updatedRequest.isAccepted() && !updatedRequest.isRejected())
+                    {
+                        if (requestCounts.find(motorbikeOwner) == requestCounts.end())
+                        {
+                            requestCounts[motorbikeOwner] = 0;
+                        }
+                        requestCounts[motorbikeOwner]++;
+
+                        if (requestCounts[motorbikeOwner] <= 1)
+                        {
+                            // Accept the first request, deny the others
+                            outFile << updatedRequest.getRequestingUser() << ","
+                                    << updatedRequest.getMotorbikeOwner() << ","
+                                    << updatedRequest.getStartTime() << ","
+                                    << updatedRequest.getEndTime() << ","
+                                    << updatedRequest.getCredit() << ","
+                                    << updatedRequest.isAccepted() << ","
+                                    << updatedRequest.isRejected() << std::endl;
+                            updated = true;
+                        }
+                        else
+                        {
+                            // Deny the additional requests
+                            outFile << updatedRequest.getRequestingUser() << ","
+                                    << updatedRequest.getMotorbikeOwner() << ","
+                                    << updatedRequest.getStartTime() << ","
+                                    << updatedRequest.getEndTime() << ","
+                                    << updatedRequest.getCredit() << ","
+                                    << false << ","
+                                    << true << std::endl;
+                            updated = true;
+                        }
+                    }
+                }
+            }
+
+            // If the request was not updated, write it as it is
+            if (!updated)
+            {
+                outFile << requestingUser << ","
+                        << motorbikeOwner << ","
+                        << startTime << ","
+                        << endTime << ","
+                        << credit << ","
+                        << accepted << ","
+                        << rejected << std::endl;
+            }
+        }
+    }
+
+    inFile.close();
     outFile.close();
+
+    // Rename the temporary file to the original file
+    if (std::rename("temp_file.txt", "rental_requests.txt") != 0)
+    {
+        std::cerr << "Error renaming temporary file!" << std::endl;
+    }
 }
 
 void UserSystem::storeRentalRequest(const RentalRequest &request)
@@ -566,7 +656,7 @@ void UserSystem::loadAndDisplayRentalRequests()
                 rentalRequests.push_back(request);
 
                 // Display the rental request information
-                std::cout << "ALL RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
+                std::cout << "RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
                 std::cout << "-----------------------------" << std::endl;
                 std::cout << "Request " << requestNumber << " from: " << request.getRequestingUser() << std::endl;
                 std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
@@ -574,7 +664,6 @@ void UserSystem::loadAndDisplayRentalRequests()
                 std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
                 ossCredit << request.getCredit();
                 std::cout << "Credit: " << ossCredit.str() << std::endl;
-                std::cout << "Accepted: " << request.isAccepted() << ", Rejected: " << request.isRejected() << std::endl;
                 if (request.isAccepted())
                 {
                     std::cout << "Status: Accepted" << std::endl;
@@ -644,4 +733,353 @@ void UserSystem::loadAndDisplayRentalRequests()
             std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
         }
     } while (choice != 0);
+}
+
+void UserSystem::loadReviewsForDisplay(const std::vector<Motorbike> &availableMotorbikes)
+{
+    int choice = 0;
+    do
+    {
+        std::cout << "Enter the number of the motorbike you want to view the reviews (0 to cancel): ";
+        std::cin >> choice;
+
+        if (choice >= 1 && choice <= availableMotorbikes.size())
+        {
+            Motorbike selectedMotorbike = availableMotorbikes[choice - 1];
+            for (UserComment &uc : renterMotorbikeRatings)
+            {
+                // uc.getBeingReviewed(): name of the motorbike's owner
+                if (selectedMotorbike.getOwnerUsername() == uc.getBeingReviewed())
+                {
+                    cout << "\n****Reviews****\n";
+                    cout << uc << endl;
+                }
+            }
+        }
+        else
+        {
+            std::cout << "Invalid choice. Please try again." << std::endl;
+        }
+    } while (!(choice >= 1 && choice <= availableMotorbikes.size()));
+}
+
+// Add new rating score and Update the avarage value of all renter-rating scores
+void UserSystem::addRenterRatingScore(User &user, double value)
+{
+    user.addToRenterRatings(value);
+    double avgValue = user.calcAverageRenterRating();
+    user.setRenterRatingScore(avgValue);
+    // Update to txt file
+    updateUserInFile(user);
+}
+// Add new rating score and Update to the avarage value of all motorbike-rating scores
+void UserSystem::addMotorbikeRatingScore(Motorbike &motorbike, double value)
+{
+    motorbike.addToMotorbikeRatings(value);
+    double avgValue = motorbike.calcAverageMotorbikeRating();
+    motorbike.setMotorbikeRating(avgValue);
+    // Update to txt file
+    updateMotorbikeInFile(motorbike);
+}
+
+bool UserSystem::mapOwnerRatingToUser()
+{
+    // Open the text file for reading
+    std::ifstream inFile("rating_owner-renter.txt");
+    if (!inFile.is_open())
+    {
+        std::cerr << "Cannot open file!" << std::endl;
+        return 1;
+    }
+
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        std::stringstream ss(line);
+        std::string reviewer, beingReviewed, timeStr, cmt;
+        double score;
+
+        if (std::getline(ss, reviewer, ',') &&
+            std::getline(ss, beingReviewed, ',') &&
+            std::getline(ss, timeStr, ',') &&
+            ss >> score && ss.ignore() &&
+            std::getline(ss, cmt))
+        {
+
+            // Convert the time string to a time_t value
+            time_t time = stringToTimestamp(timeStr);
+
+            for (User &user : users)
+            {
+                if (user.getUsername() == reviewer)
+                {
+                    // if user has not been rated ever
+                    if (user.getRenterRatingScore() == 0)
+                    {
+                        user.setRenterRatingScore(score);
+                    }
+                    else
+                    {
+                        addRenterRatingScore(user, score);
+                    }
+                }
+            }
+            // Create a UserComment object and add it to the vector
+            UserComment userComment(reviewer, beingReviewed, time, score, cmt);
+            ownerRenterRatings.push_back(userComment);
+        }
+        else
+        {
+            std::cerr << "Error parsing line: " << line << std::endl;
+        }
+    }
+
+    // Close the input file
+    inFile.close();
+}
+
+bool UserSystem::mapRenterRatingToMotorbike()
+{
+    // Open the text file for reading
+    std::ifstream inFile("rating_owner-renter.txt");
+    if (!inFile.is_open())
+    {
+        std::cerr << "Cannot open file!" << std::endl;
+        return 1;
+    }
+
+    std::string line;
+    while (std::getline(inFile, line))
+    {
+        std::stringstream ss(line);
+        std::string reviewer, beingReviewed, timeStr, cmt;
+        double score;
+
+        if (std::getline(ss, reviewer, ',') &&
+            std::getline(ss, beingReviewed, ',') &&
+            std::getline(ss, timeStr, ',') &&
+            ss >> score && ss.ignore() &&
+            std::getline(ss, cmt))
+        {
+
+            // Convert the time string to a time_t value
+            time_t time = stringToTimestamp(timeStr);
+
+            for (Motorbike &motorbike : motorbikes)
+            {
+                if (motorbike.getOwnerUsername() == reviewer)
+                {
+                    // if motorbike has not been rated ever
+                    if (motorbike.getMotorbikeRating() == 0)
+                    {
+                        motorbike.setMotorbikeRating(score);
+                    }
+                    else
+                    {
+                        addMotorbikeRatingScore(motorbike, score);
+                    }
+                }
+            }
+            // Create a UserComment object and add it to the vector
+            UserComment userComment(reviewer, beingReviewed, time, score, cmt);
+            renterMotorbikeRatings.push_back(userComment);
+        }
+        else
+        {
+            std::cerr << "Error parsing line: " << line << std::endl;
+        }
+    }
+
+    // Close the input file
+    inFile.close();
+}
+
+void UserSystem::addUserCommentToFile(const UserComment &comment, std::string filename)
+{
+    // Open the text file for appending
+    std::ofstream outFile(filename, std::ios::app);
+    if (!outFile.is_open())
+    {
+        std::cerr << "Cannot open file!" << std::endl;
+        return;
+    }
+
+    // Convert the time_t value to a time string
+    std::string timeStr = timestampToString(comment.getEndTime());
+
+    // Write the UserComment data to the file
+    outFile << comment.getReviewer() << "," << comment.getBeingReviewed() << "," << timeStr << "," << comment.getScore() << "," << comment.getComment() << "\n";
+
+    // Close the output file
+    outFile.close();
+}
+
+void UserSystem::updateOwnerRenterRatingFile(const UserComment &updatedData)
+{
+    for (UserComment &comment : ownerRenterRatings)
+    {
+        if (comment.getReviewer() == updatedData.getReviewer() &&
+            comment.getBeingReviewed() == updatedData.getBeingReviewed() &&
+            comment.getEndTime() == updatedData.getEndTime())
+        {
+            // Update the existing UserComment with the new data
+            comment = updatedData;
+            break;
+        }
+    }
+    // Write the updated UserComments to the file
+    std::ofstream outFile("rating_owner-renter.txt");
+    if (outFile.is_open())
+    {
+        for (const UserComment &comment : ownerRenterRatings)
+        {
+            // Convert the time_t value to a time string
+            std::string timeStr = timestampToString(comment.getEndTime());
+
+            // Write the UserComment data to the file
+            outFile << comment.getReviewer() << "," << comment.getBeingReviewed() << "," << timeStr << "," << comment.getScore() << "," << comment.getComment() << "\n";
+        }
+        outFile.close();
+    }
+}
+
+void UserSystem::updateRenterMotorbikeRatingFile(const UserComment &updatedData)
+{
+    for (UserComment &comment : renterMotorbikeRatings)
+    {
+        if (comment.getReviewer() == updatedData.getReviewer() &&
+            comment.getBeingReviewed() == updatedData.getBeingReviewed() &&
+            comment.getEndTime() == updatedData.getEndTime())
+        {
+            // Update the existing UserComment with the new data
+            comment = updatedData;
+            break;
+        }
+    }
+    // Write the updated UserComments to the file
+    std::ofstream outFile("rating_renter-motorbike.txt");
+    if (outFile.is_open())
+    {
+        for (const UserComment &comment : renterMotorbikeRatings)
+        {
+            // Convert the time_t value to a time string
+            std::string timeStr = timestampToString(comment.getEndTime());
+
+            // Write the UserComment data to the file
+            outFile << comment.getReviewer() << "," << comment.getBeingReviewed() << "," << timeStr << "," << comment.getScore() << "," << comment.getComment() << "\n";
+        }
+        outFile.close();
+    }
+}
+
+void UserSystem::RenterRating()
+{
+    // Load rental requests from the file
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    std::ifstream inFile("rental_requests.txt");
+    if (!inFile.is_open())
+    {
+        std::cerr << "Cannot open rental requests file!" << std::endl;
+        return;
+    }
+    std::string line;
+    int lineNumber = 0;            // Keep track of the line number being processed
+    bool ownerHasRequests = false; // Flag to check if the owner has any requests
+    int requestNumber = 0;
+    std::time_t time_now = std::time(0); 
+    bool x=false;
+
+    while (std::getline(inFile, line))
+    {
+        lineNumber++; // Increment line number
+        std::stringstream ss(line);
+        std::ostringstream ossCredit;
+        ossCredit << std::fixed << std::setprecision(1);
+        std::string requestingUser, motorbikeOwner;
+        time_t startTime, endTime;
+        double credit;
+        bool accepted;
+        bool rejected;
+
+        if (std::getline(ss, requestingUser, ',') &&
+            std::getline(ss, motorbikeOwner, ',') &&
+            ss >> startTime && ss.ignore() &&
+            ss >> endTime && ss.ignore() &&
+            ss >> credit && ss.ignore() &&
+            ss >> accepted && ss.ignore() &&
+            ss >> rejected)
+        {
+            // Check if the motorbike owner matches the logged-in user's username
+            if (requestingUser == loggedInUser.getUsername())
+            {
+                if (accepted==true && endTime<now){
+                    requestNumber++;
+
+                    // Create a RentalRequest object
+                    RentalRequest request(requestingUser, motorbikeOwner, startTime, endTime, credit, accepted, rejected);
+
+                    // Add the request to the rentalRequests vector
+                    rentalRequests.push_back(request);
+
+                    // Display the rental request information
+                    std::cout << "RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
+                    std::cout << "-----------------------------" << std::endl;
+                    std::cout << "Renting " << requestNumber << " from: " << requestingUser << std::endl;
+                    std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
+                    std::cout << "Start Time: " << timestampToString(request.getStartTime()) << std::endl;
+                    std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
+                    x = true;
+                    
+
+                    // push rating to array to save
+                }
+        }
+        else
+        {
+            std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
+        }
+    }
+    }
+
+    inFile.close();
+    if (!x)
+    {
+        std::cout << "You don't have any pending requests." << std::endl;
+    }
+    int choice = 0;
+    int rating;
+    string comment;
+    do
+    {
+        std::cout << "Enter the number of the request to rate (0 to exit): ";
+        std::cin >> choice;
+
+        if (choice >= 1 && choice <= rentalRequests.size())
+        {
+            RentalRequest &request = rentalRequests[choice - 1];           
+            cout << "Rating your rented bike on the scale 0-10:\n";
+            cin>>rating;
+
+
+            // Add TO rating.
+            getline(cin, comment);
+            cout << "Add comment:\n";
+            getline(cin,comment);
+
+
+            // Add to comment.
+        }
+        else if (choice != 0)
+        {
+            std::cout << "Invalid choice. Please try again." << std::endl;
+            std::cin.clear();                                                   // Clear any error flags
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // Clear the input buffer
+        }
+    } while (choice != 0);
+    return;
 }
