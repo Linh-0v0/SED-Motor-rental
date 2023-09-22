@@ -976,10 +976,10 @@ void UserSystem::RenterRating()
 {
     // Load rental requests from the file
     time_t     now = time(0);
-    struct tm  tstruct;
-    char       buf[80];
-    tstruct = *localtime(&now);
-    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+    // struct tm  tstruct;
+    // char       buf[80];
+    // tstruct = *localtime(&now);
+    // strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
     std::ifstream inFile("rental_requests.txt");
     if (!inFile.is_open())
@@ -987,15 +987,16 @@ void UserSystem::RenterRating()
         std::cerr << "Cannot open rental requests file!" << std::endl;
         return;
     }
+
     std::string line;
     int lineNumber = 0;            // Keep track of the line number being processed
-    bool ownerHasRequests = false; // Flag to check if the owner has any requests
     int requestNumber = 0;
     std::time_t time_now = std::time(0); 
     bool x=false;
 
     while (std::getline(inFile, line))
     {
+
         lineNumber++; // Increment line number
         std::stringstream ss(line);
         std::ostringstream ossCredit;
@@ -1014,7 +1015,7 @@ void UserSystem::RenterRating()
             ss >> accepted && ss.ignore() &&
             ss >> rejected)
         {
-            // Check if the motorbike owner matches the logged-in user's username
+            // Check if the renter matches the logged-in user's username
             if (requestingUser == loggedInUser.getUsername())
             {
                 if (accepted==true && endTime<now){
@@ -1027,29 +1028,26 @@ void UserSystem::RenterRating()
                     rentalRequests.push_back(request);
 
                     // Display the rental request information
-                    std::cout << "RENTAL REQUEST OF YOUR MOTORBIKE" << std::endl;
+                    std::cout << "RENTING MOTORBIKE:" << std::endl;
                     std::cout << "-----------------------------" << std::endl;
-                    std::cout << "Renting " << requestNumber << " from: " << requestingUser << std::endl;
-                    std::cout << "Motorbike owner: " << request.getMotorbikeOwner() << std::endl;
-                    std::cout << "Start Time: " << timestampToString(request.getStartTime()) << std::endl;
-                    std::cout << "End Time: " << timestampToString(request.getEndTime()) << std::endl;
+                    std::cout << "Renting number:" << requestNumber  << std::endl;
+                    std::cout << "Motorbike owner: " << motorbikeOwner << std::endl;
+                    std::cout << "Start Time: " << timestampToString(startTime) << std::endl;
+                    std::cout << "End Time: " << timestampToString(endTime) << std::endl;
                     x = true;
-                    
-
-                    // push rating to array to save
                 }
-        }
-        else
+                
+            }
+        }else
         {
             std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
         }
     }
-    }
-
+    
     inFile.close();
     if (!x)
     {
-        std::cout << "You don't have any pending requests." << std::endl;
+        std::cout << "You haven't requested any bike." << std::endl;
     }
     int choice = 0;
     int rating;
