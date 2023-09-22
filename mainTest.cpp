@@ -363,7 +363,8 @@ int main()
                             cout << "Option " << (i + 1) << ":" << std::endl;
                             cout << availableMotorbikes[i] << std::endl;
                         }
-                        if (availableMotorbikes.empty())
+                        // cuz the first motorbike is the owner
+                        if (availableMotorbikes.size() != 1 && availableMotorbikes.size() != 0)
                         {
                             cout << "No motorbikes available.\n";
                         }
@@ -374,15 +375,15 @@ int main()
                             do
                             {
                                 cin >> reviewChoice;
+                                if (reviewChoice == 1)
+                                {
+                                    userSystem.loadReviewsForDisplay(availableMotorbikes);
+                                }
                                 if (reviewChoice != 1 && reviewChoice != 2)
                                 {
                                     cout << "Invalid input. Please input again\n";
                                 }
                             } while (reviewChoice != 1 && reviewChoice != 2);
-                            if (reviewChoice == 1)
-                            {
-                                userSystem.loadReviewsForDisplay(availableMotorbikes);
-                            }
 
                             userSystem.requestMotorbikeRental(userSystem, loggedInUser, availableMotorbikes);
                         }

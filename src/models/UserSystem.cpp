@@ -3,6 +3,7 @@
 #include <string>
 #include <sstream>
 #include <ctime>
+#include <unordered_map>
 #include <fstream>
 #include "../../include/models/UserSystem.h"
 #include "../../include/models/RentalRequest.h"
@@ -478,7 +479,7 @@ void UserSystem::updateRentalRequestsToFile(const std::string &filename, const s
     }
 
     std::string line;
-    std::unordered_map<std::string, int> requestCounts;  // To keep track of the number of requests per owner and time
+    std::unordered_map<std::string, int> requestCounts; // To keep track of the number of requests per owner and time
 
     while (std::getline(inFile, line))
     {
@@ -562,7 +563,6 @@ void UserSystem::updateRentalRequestsToFile(const std::string &filename, const s
         std::cerr << "Error renaming temporary file!" << std::endl;
     }
 }
-
 
 void UserSystem::storeRentalRequest(const RentalRequest &request)
 {
