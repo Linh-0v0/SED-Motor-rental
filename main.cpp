@@ -69,7 +69,7 @@ int main()
     cout << "\nEEET2482/COSC2082 ASSIGNMENT";
     cout << "\nMOTORBIKE RENTAL APPLICATION";
     cout << "\nInstructor: Dr. Ling Huo Chong";
-    cout << "\nGroup: Group No.";
+    cout << "\nGroup: Group No.15";
     cout << "\ns3805869, Student Name: Nguyen Truong Thinh.\ns3878533, Student Name: Nguyen Hoang To Nhu.\ns3864120, Student Name: Vu Bui Khanh Linh";
 
     while (1)
