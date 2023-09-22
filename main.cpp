@@ -204,7 +204,7 @@ int main()
                 {
 
                     cout << "\nThis is your menu:" << endl;
-                    cout << "0. Exit\n1. View information\n2. List motorbike for renting\n3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n7. Renter rating";
+                    cout << "0. Exit\n1. View information\n2. List motorbike for renting\n3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n7. Rate motorbike owner\n";
                     cout << "\nEnter your choice:";
                     cin >> command;
 
@@ -367,7 +367,7 @@ int main()
                             cout << availableMotorbikes[i] << std::endl;
                         }
                         // cuz the first motorbike is the owner
-                        if (availableMotorbikes.size() != 1 && availableMotorbikes.size() != 0)
+                        if ( availableMotorbikes.size() == 0)
                         {
                             cout << "No motorbikes available.\n";
                         }

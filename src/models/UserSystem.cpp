@@ -1131,6 +1131,7 @@ void UserSystem::renterRating()
                         request.setIsRated(true);
                         // update ratedState
                         updateRentalRequestToFile(request);
+                        cout << "Rating successfully!\n";
                     }
                 }
             }
