@@ -971,3 +971,73 @@ void UserSystem::updateRenterMotorbikeRatingFile(const UserComment &updatedData)
         outFile.close();
     }
 }
+
+void UserSystem::renterRating()
+{
+    // Load rental requests from the file
+    time_t     now = time(0);
+    struct tm  tstruct;
+    char       buf[80];
+    tstruct = *localtime(&now);
+    strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
+
+    std::ifstream inFile("rental_requests.txt");
+    if (!inFile.is_open())
+    {
+        std::cerr << "Cannot open rental requests file!" << std::endl;
+        return;
+    }
+    std::string line;
+    int lineNumber = 0;            // Keep track of the line number being processed
+    bool ownerHasRequests = false; // Flag to check if the owner has any requests
+    int requestNumber = 0;
+    std::time_t time_now = std::time(0); 
+    bool x=false;
+
+    while (std::getline(inFile, line))
+    {
+        lineNumber++; // Increment line number
+        std::stringstream ss(line);
+        std::ostringstream ossCredit;
+        ossCredit << std::fixed << std::setprecision(1);
+        std::string requestingUser, motorbikeOwner;
+        time_t startTime, endTime;
+        double credit;
+        bool accepted;
+        bool rejected;
+
+        if (std::getline(ss, requestingUser, ',') &&
+            std::getline(ss, motorbikeOwner, ',') &&
+            ss >> startTime && ss.ignore() &&
+            ss >> endTime && ss.ignore() &&
+            ss >> credit && ss.ignore() &&
+            ss >> accepted && ss.ignore() &&
+            ss >> rejected)
+        {
+            // Check if the motorbike owner matches the logged-in user's username
+            if (motorbikeOwner == loggedInUser.getUsername())
+            {
+                int rating;
+
+                if (accepted==true && endTime<now){
+                    x = true;
+                    cout << requestingUser<< " has finished renting your bike.\nRating available now.\n";
+                    cin>>rating;
+
+                    // push rating to array to save
+                }
+        }
+        else
+        {
+            std::cerr << "Error parsing line " << lineNumber << ": " << line << std::endl;
+        }
+    }
+    }
+
+    inFile.close();
+    if (!x)
+    {
+        std::cout << "You don't have any pending requests." << std::endl;
+    }
+    return;
+}

@@ -201,7 +201,7 @@ int main()
                 {
 
                     cout << "\nThis is your menu:" << endl;
-                    cout << "0. Exit\n1. View information\n2. List motorbike for renting\n3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n";
+                    cout << "0. Exit\n1. View information\n2. List motorbike for renting\n3. Unlist motorbike from renting\n4. Search for motorbikes to rent\n5. Top up credit\n6. View renting requests of your motorbikes\n7. Renter rating";
                     cout << "\nEnter your choice:";
                     cin >> command;
 
@@ -407,6 +407,9 @@ int main()
                     else if (command == 6)
                     {
                         userSystem.loadAndDisplayRentalRequests();
+                    }
+                    else if (command == 7){
+                        userSystem.RenterRating();
                     }
                 }
             }

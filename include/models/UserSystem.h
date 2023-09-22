@@ -96,6 +96,7 @@ public:
     void addUserCommentToFile(const UserComment& comment, std::string filename);
     void updateOwnerRenterRatingFile(const UserComment& updatedData);
     void updateRenterMotorbikeRatingFile(const UserComment& updatedData);
+    void renterRating();
 };
 
 #endif
