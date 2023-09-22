@@ -40,6 +40,7 @@ public:
     /*Import-Add Data*/
     bool importUsers();
     bool importMotorbikes();
+    bool importRentalRequests();
     // Add new user to System
     bool addUser(const User &user);
     // Add new motorbike to System
@@ -79,7 +80,8 @@ public:
     User *findUserByUsername(const std::string &username);
     void storeRentalRequest(const RentalRequest &request);
     void requestMotorbikeRental(UserSystem &userSystem, const User &loggedInUser, const std::vector<Motorbike> &availableMotorbikes);
-    void updateRentalRequestsToFile(const std::string &filename, const std::vector<RentalRequest> &updatedRequests);
+    void updateRentalRequestsToFile(const std::vector<RentalRequest> &updatedRequests);
+    void updateRentalRequestToFile(const RentalRequest &updatedRequest);
     void saveRentalRequestsToFile(const std::string &filename);
     void loadAndDisplayRentalRequests();
     void loadReviewsForDisplay(const std::vector<Motorbike> &availableMotorbikes);
@@ -95,7 +97,7 @@ public:
     void updateOwnerRenterRatingFile(const UserComment &updatedData);
     void updateRenterMotorbikeRatingFile(const UserComment &updatedData);
     // check if the user's motorbike rent is in the past
-    void RenterRating();
+    void renterRating();
     // deduct credit of the renter
     void deductCreditBasedOnRentingDays(std::string renter, Motorbike &motorbike);
 };

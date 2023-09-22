@@ -162,7 +162,7 @@ void Motorbike::requestToRentMotorbike(const std::string &requestingUser, const 
     if (listedForRent)
     {
         // Create a rental request
-        RentalRequest request(requestingUser, ownerUsername, startTime, endTime, credit, false, false);
+        RentalRequest request(requestingUser, ownerUsername, startTime, endTime, false, false, false);
 
         // Add the rental request to the pending requests
         pendingRequests.push_back(request);

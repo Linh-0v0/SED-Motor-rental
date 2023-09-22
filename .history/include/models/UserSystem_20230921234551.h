@@ -79,7 +79,7 @@ public:
     void saveRentalRequestsToFile(const std::string& filename);
     void loadAndDisplayRentalRequests();
     void acceptOrRejectRequest();
-    bool UserSystem::RenterRating()
+    bool UserSystem::renterRating()
 };
 
 #endif

@@ -62,6 +62,9 @@ int main()
         return 1; // Exit with an error code
     }
 
+    //Load rentalrequests
+    userSystem.importRentalRequests();
+
     /***** INTERFACE *****/
     cout << "\nEEET2482/COSC2082 ASSIGNMENT";
     cout << "\nMOTORBIKE RENTAL APPLICATION";
@@ -410,7 +413,7 @@ int main()
                     }
                     else if (command == 7)
                     {
-                        userSystem.RenterRating();
+                        userSystem.renterRating();
                     }
                 }
             }

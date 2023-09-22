@@ -1,5 +1,5 @@
 #include <iostream>     //use string
-#include <fstream>      //save to appdata.txt
+#include <fstream>      //save to ./appdata/users.txt
 #include <limits>       //check integer
 #include <string.h>     //use string function
 using namespace std;    //use std

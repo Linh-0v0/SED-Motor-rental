@@ -41,7 +41,7 @@ const User &UserSystem::getLoggedInUser()
 bool UserSystem::importUsers()
 {
     // Implementation to read and populate User objects from the file
-    std::ifstream inFile("appdata.txt");
+    std::ifstream inFile("./appdata/users.txt");
     if (!inFile.is_open())
     {
         std::cerr << "Cannot open file!";
@@ -85,7 +85,7 @@ bool UserSystem::importUsers()
 bool UserSystem::importMotorbikes()
 {
     // Implementation to read and populate User objects from the file
-    std::ifstream inFile("motorbikes.txt");
+    std::ifstream inFile("./appdata/motorbikes.txt");
     if (!inFile.is_open())
     {
         std::cerr << "Cannot open file!";
@@ -140,7 +140,7 @@ bool UserSystem::addUser(const User &user)
 {
     users.push_back(user);
     // Add user to text file code
-    std::ofstream outFile("appdata.txt", std::ios::app);
+    std::ofstream outFile("./appdata/users.txt", std::ios::app);
     if (!outFile.is_open())
     {
         std::cerr << "Cannot open file for writing!" << std::endl;
@@ -167,7 +167,7 @@ bool UserSystem::addMotorbike(const Motorbike &motorbike)
 {
     motorbikes.push_back(motorbike);
     // Add motorbike to text file code
-    std::ofstream outFile("motorbikes.txt", std::ios::app); // Open in append mode to add new motorbike
+    std::ofstream outFile("./appdata/motorbikes.txt", std::ios::app); // Open in append mode to add new motorbike
     if (!outFile.is_open())
     {
         std::cerr << "Cannot open file for writing!" << std::endl;
@@ -191,7 +191,7 @@ void UserSystem::updateUserInFile(const User &updatedUser)
             break;
         }
     }
-    std::ofstream outFile("appdata.txt");
+    std::ofstream outFile("./appdata/users.txt");
     if (!outFile.is_open())
     {
         std::cerr << "Cannot open file for writing!";
@@ -217,7 +217,7 @@ void UserSystem::updateMotorbikeInFile(const Motorbike &updatedMotorbike)
         }
     }
 
-    std::ofstream outFile("motorbikes.txt");
+    std::ofstream outFile("./appdata/motorbikes.txt");
     if (!outFile.is_open())
     {
         std::cerr << "Cannot open file for writing!";
@@ -483,7 +483,7 @@ void UserSystem::storeRentalRequest(const RentalRequest &request)
     rentalRequests.push_back(updatedRequest);
 
     // Save the updated list of rental requests to a file
-    saveRentalRequestsToFile("rental_requests.txt");
+    saveRentalRequestsToFile("./appdata/rental_requests.txt");
 }
 
 void UserSystem::requestMotorbikeRental(UserSystem &userSystem, const User &loggedInUser, const std::vector<Motorbike> &availableMotorbikes)
@@ -521,7 +521,7 @@ void UserSystem::requestMotorbikeRental(UserSystem &userSystem, const User &logg
 void UserSystem::loadAndDisplayRentalRequests()
 {
     // Load rental requests from the file
-    std::ifstream inFile("rental_requests.txt");
+    std::ifstream inFile("./appdata/rental_requests.txt");
     if (!inFile.is_open())
     {
         std::cerr << "Cannot open rental requests file!" << std::endl;
@@ -630,7 +630,7 @@ void UserSystem::loadAndDisplayRentalRequests()
                 }
 
                 // Save the updated requests to the file
-                updateRentalRequestsToFile("rental_requests.txt", rentalRequests);
+                updateRentalRequestsToFile("./appdata/rental_requests.txt", rentalRequests);
             }
             else
             {
@@ -646,7 +646,7 @@ void UserSystem::loadAndDisplayRentalRequests()
     } while (choice != 0);
 }
 
-void UserSystem::RenterRating()
+void UserSystem::renterRating()
 {
     // Load rental requests from the file
     time_t     now = time(0);
@@ -655,7 +655,7 @@ void UserSystem::RenterRating()
     tstruct = *localtime(&now);
     strftime(buf, sizeof(buf), "%Y-%m-%d.%X", &tstruct);
 
-    std::ifstream inFile("rental_requests.txt");
+    std::ifstream inFile("./appdata/rental_requests.txt");
     if (!inFile.is_open())
     {
         std::cerr << "Cannot open rental requests file!" << std::endl;

@@ -9,7 +9,7 @@ struct UserComment
     std::string reviewer;
     std::string beingReviewed;
     std::string comment;
-    time_t endTime; // endTime to check users allowed for rating
+    time_t endTime; // endTime of Motorbike to check users allowed for rating
     double score;
 
     UserComment(const std::string &reviewer, const std::string &beingReviewed, const time_t &time, double score, const std::string &cmt);

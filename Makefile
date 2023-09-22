@@ -7,7 +7,7 @@ CXXFLAGS = -std=c++11 -Wall
 TARGET = bin/linh_program
 
 # Define the source files and object files
-SRCS = mainTest.cpp src/utils/Time.cpp src/models/UserComment.cpp src/models/User.cpp src/models/Admin.cpp src/models/Motorbike.cpp src/models/UserSystem.cpp src/models/RentalRequest.cpp
+SRCS = main.cpp src/utils/Time.cpp src/models/UserComment.cpp src/models/User.cpp src/models/Admin.cpp src/models/Motorbike.cpp src/models/UserSystem.cpp src/models/RentalRequest.cpp
 
 # Build rule to compile the program
 # $(CXX) $(CXXFLAGS) $(SRCS) -o $(TARGET)

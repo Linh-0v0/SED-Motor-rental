@@ -9,8 +9,8 @@ using namespace std;
 
 
 // Implement the RentalRequest constructor
-RentalRequest::RentalRequest( const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, bool accepted, bool rejected)
-    : requestingUser(requestingUser), motorbikeOwner(motorbikeOwner), startTime(startTime), endTime(endTime), accepted(accepted), rejected(rejected) { 
+RentalRequest::RentalRequest( const std::string& requestingUser, const std::string& motorbikeOwner, std::time_t startTime, std::time_t endTime, bool accepted, bool rejected, bool rated)
+    : requestingUser(requestingUser), motorbikeOwner(motorbikeOwner), startTime(startTime), endTime(endTime), accepted(accepted), rejected(rejected), rated(rated) { 
     this->requestingUser = requestingUser;
     this->motorbikeOwner = motorbikeOwner;
 
@@ -45,10 +45,44 @@ void RentalRequest::setAccepted(bool value) {
     accepted = value;
 }
 
-bool  RentalRequest::isRejected() const {
+bool RentalRequest::isRejected() const {
     return rejected;
 }
 
 void RentalRequest::setRejected(bool value) {
     rejected = value;
+}
+
+bool RentalRequest::isRated() const {
+    return rated;
+}
+
+void RentalRequest::setIsRated(bool value) {
+    rated = value;
+}
+
+std::string RentalRequest::toFileString() const
+{
+    std::stringstream ss;
+    ss << requestingUser << ","
+       << motorbikeOwner << ","
+       << startTime << ","
+       << endTime << ","
+       << accepted << ","
+       << rejected << ","
+       << rated;
+    return ss.str();
+}
+
+std::ostream& operator<<(std::ostream& os, const RentalRequest& request) {
+    // You can format and output the attributes as desired
+    os << "Requesting User: " << request.requestingUser << std::endl;
+    os << "Motorbike Owner: " << request.motorbikeOwner << std::endl;
+    os << "Start Time: " << std::put_time(std::localtime(&request.startTime), "%Y-%m-%d %H:%M:%S") << std::endl;
+    os << "End Time: " << std::put_time(std::localtime(&request.endTime), "%Y-%m-%d %H:%M:%S") << std::endl;
+    os << "Accepted: " << (request.accepted ? "Yes" : "No") << std::endl;
+    os << "Rejected: " << (request.rejected ? "Yes" : "No") << std::endl;
+    os << "Rated: " << (request.rated ? "Yes" : "No") << std::endl;
+
+    return os;
 }

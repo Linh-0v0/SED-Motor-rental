@@ -376,7 +376,7 @@ int main()
                     }
                     else if (command == 7)
                     {
-                        if (userSystem.RenterRating()){cout<<"yr"};
+                        if (userSystem.renterRating()){cout<<"yr"};
                     }
                 }
             }

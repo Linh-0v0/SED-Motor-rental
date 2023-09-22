@@ -79,7 +79,7 @@ public:
     void saveRentalRequestsToFile(const std::string& filename);
     void loadAndDisplayRentalRequests();
     void acceptOrRejectRequest();
-    void RenterRating();
+    void renterRating();
 };
 
 #endif

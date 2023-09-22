@@ -375,7 +375,7 @@ int main()
                         userSystem.loadAndDisplayRentalRequests();
                     }
                     else if (command == 7){
-                        userSystem.RenterRating();
+                        userSystem.renterRating();
                     }
                 }
             }

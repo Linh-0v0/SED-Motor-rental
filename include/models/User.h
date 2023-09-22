@@ -1,7 +1,7 @@
 #ifndef USER_H
 #define USER_H
 #include <iostream> //use string
-#include <fstream>  //save to appdata.txt
+#include <fstream>  //save to ./appdata/users.txt
 #include <vector>
 #include <limits>   //check integer
 #include <string>
